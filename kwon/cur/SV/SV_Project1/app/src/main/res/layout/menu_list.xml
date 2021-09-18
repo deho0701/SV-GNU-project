@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:id="@+id/tv_cafe_name"
+        android:id="@+id/tv_menu_name"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_marginStart="7dp"
@@ -18,12 +18,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iv_cafe"
+        app:layout_constraintStart_toEndOf="@+id/iv_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tv_cafe_content"
+        android:id="@+id/tv_menu_content"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginStart="10dp"
@@ -33,12 +33,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iv_cafe"
-        app:layout_constraintTop_toBottomOf="@+id/tv_cafe_name"
+        app:layout_constraintStart_toEndOf="@+id/iv_menu"
+        app:layout_constraintTop_toBottomOf="@+id/tv_menu_name"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/iv_cafe"
+        android:id="@+id/iv_menu"
         android:layout_width="80dp"
         android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent"

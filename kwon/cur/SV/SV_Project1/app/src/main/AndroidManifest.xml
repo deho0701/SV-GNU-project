@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".CafeListActivity"></activity>
         <activity android:name=".MenuListActivity"></activity>
+        <activity android:name=".SitPageActivity"></activity>
     </application>
 
 </manifest>

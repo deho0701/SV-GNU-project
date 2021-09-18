@@ -51,14 +51,6 @@ class CafeRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<C
             name.text = item.name
             content.text = item.content
 
-            // menu로 이동
-            itemView.findViewById<Button>(R.id.btn_menu).setOnClickListener {
-                Intent(context, MenuListActivity::class.java).apply {
-                    putExtra("list data", item as Serializable)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }.run { context.startActivity(this) }
-            }
-
             // sit page로 이동
             itemView.setOnClickListener {
                 Intent(context, SitPageActivity::class.java).apply {
@@ -66,7 +58,15 @@ class CafeRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<C
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.run { context.startActivity(this) }
             }
+
+
+            // menu로 이동
+            itemView.findViewById<Button>(R.id.btn_menu).setOnClickListener {
+                Intent(context, MenuListActivity::class.java).apply {
+                    putExtra("list data", item as Serializable)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }.run { context.startActivity(this) }
+            }
         }
     }
-
 }

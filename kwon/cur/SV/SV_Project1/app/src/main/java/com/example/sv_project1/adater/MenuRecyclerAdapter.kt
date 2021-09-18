@@ -9,19 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sv_project1.R
-import kotlinx.android.synthetic.main.activity_menu.view.*
+import com.example.sv_project1.data.MenuData
 
-
-class MenuData(val icon:Int, val name:String, val content:String)
-
-
-class MenuViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-    LayoutInflater.from(parent.context)
-        .inflate(R.layout.menu_list, parent, false))  {
-    val icon = itemView.iv_menu
-    val name = itemView.tv_menu_name
-    val content = itemView.tv_menu_content
-}
 
 
 class MenuRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<MenuRecyclerAdapter.MenuRecyclerViewHolder>() {

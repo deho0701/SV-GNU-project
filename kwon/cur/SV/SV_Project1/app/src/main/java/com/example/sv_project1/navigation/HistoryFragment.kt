@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sv_project1.adater.HistoryRecyclerAdapter
 import com.example.sv_project1.R
 import com.example.sv_project1.data.ListData
+import com.example.sv_project1.decorator.HorizontalItemDecorator
+import com.example.sv_project1.decorator.VerticalItemDecorator
 import kotlinx.android.synthetic.main.fragment_history.*
+import kotlinx.android.synthetic.main.fragment_home.*
 
 
 class HistoryFragment : Fragment() {
@@ -30,6 +33,9 @@ class HistoryFragment : Fragment() {
 
         history_recyclerView.layoutManager = LinearLayoutManager(activity)
         initRecycler(requireContext())
+
+        history_recyclerView.addItemDecoration(VerticalItemDecorator(20))
+        history_recyclerView.addItemDecoration(HorizontalItemDecorator(10))
 
     }
 
