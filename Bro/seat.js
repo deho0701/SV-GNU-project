@@ -1,4 +1,13 @@
-var obj = document.getElementById("shop");
+var button = document.getElementById("button");
+var p = document.getElementById("shop");
+var newDIV = document.createElement("div");
+button.onclick = function(){
+  newDIV.innerHTML = "1";
+  newDIV.setAttribute("id","table");
+  p.appendChild(newDIV);
+};
+
+var table = document.getElementById("table");
 
 table.onmousedown = function(event) {
 

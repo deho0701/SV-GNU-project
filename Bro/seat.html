@@ -1,9 +1,10 @@
 <!doctype html>
 <html>
-    <head>
+    <head> 
         <link rel="stylesheet" href="seat.css">
     </head>
     <body>
+        <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
         <div class="wrapper">
             <div class="profile">
                 <div class="box">
@@ -16,20 +17,23 @@
             </div>
             <div class="sidebar">
                 <ul>
-                    <li><a href="main.html">예약 현황</a></li>
+                    <li><a href="index.html">예약 현황</a></li>
                     <li><a href="#">메뉴 등록</a></li>
                     <li><a href="#">설정</a></li>
                 </ul>
             </div>
             <div id="container" class="container">
-                <button>추가</button>
+                <button id="add">추가</button>
+                <input type="file" id="fileInput"/>
                 <div id="shop" class="shop">
-                    <p>자리를 옮기세요</p>
-                    <div id="table">0</div>
-                    <!--<div id="table">1</div>-->
+                    <!--<p>자리를 옮기세요</p>
+                    <div id="table1" class="table">1</div>
+                    <div id="table2" class="table">2</div>
+                    <div id="table3"class="table">3</div>-->
                 </div>
+                <div class="status"></div>
             </div>
         </div>
-        <script src="seat.js"></script>
+        <script src="seat1.js"></script>
     </body>
 </html>

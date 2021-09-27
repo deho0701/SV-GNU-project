@@ -4,8 +4,7 @@ import {Dialog} from './dialog.js';
 
 class App{
     constructor(){
-        this.canvas = document.createElement('canvas');
-        document.body.appendChild(this.canvas);
+        this.canvas = document.getElementById('shop');
         this.ctx = this.canvas.getContext('2d');
 
         this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
@@ -14,7 +13,7 @@ class App{
         this.curItem = null;
 
         this.items = [];
-        this.total = 1;
+        this.total = 2;
         for(let i = 0; i < this.total; i ++){
             this.items[i] = new Dialog();
         }
@@ -95,3 +94,4 @@ class App{
 window.onload = () => {
     new App();
 };
+

@@ -102,15 +102,28 @@ a:hover{
 
 /* 가게 */
 .shop{
-    width: auto;
-    height: 80%;
+    width: 1000px;
+    height: 500px;
     border: 1px solid black;
     margin: 60px;
+    position: relative;
 }
 
-#table {
+.table {
     cursor: pointer;
-    width: 40px;
+    width: 80px;
     height: 80px;
     border: 1px solid black;
+    position:absolute;
+}
+
+canvas{
+    width: 100%;
+    height: 100%;
+    background-color: coral;
+}
+
+.photoFrame{
+    width: 1000px;
+    height: 500px;
   }
