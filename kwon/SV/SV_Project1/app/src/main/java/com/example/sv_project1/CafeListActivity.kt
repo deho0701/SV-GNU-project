@@ -3,27 +3,37 @@ package com.example.sv_project1
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sv_project1.adater.CafeRecyclerAdapter
+import com.example.sv_project1.csv_data.CsvHelper
 import com.example.sv_project1.data.ListData
 import com.example.sv_project1.decorator.HorizontalItemDecorator
 import com.example.sv_project1.decorator.VerticalItemDecorator
+import com.opencsv.CSVReaderHeaderAware
 import kotlinx.android.synthetic.main.activity_cafe_list.*
+import java.io.FileReader
 import java.io.Serializable
+import java.util.*
 
 
 class CafeListActivity : AppCompatActivity() {
     lateinit var cafeRecyclerAdapter: CafeRecyclerAdapter
-
-    var MyList = arrayOf("StarBucks", "Ediya", "BanbanSprings")
 
     val datas = mutableListOf<ListData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cafe_list)
+
+        val assetManager = resources.assets
+        val inputStream = assetManager.open("cafe_list.txt")
+        val cafeList = inputStream.bufferedReader().readLines().forEach {
+            Log.d("cafe_test", it.toString())
+        }
+
 
         initRecycler(this)
 
@@ -58,8 +68,8 @@ class CafeListActivity : AppCompatActivity() {
             cafeRecyclerAdapter.datas = datas
             cafeRecyclerAdapter.notifyDataSetChanged()
         }
-
-
     }
+
+
 
 }
