@@ -20,9 +20,10 @@ import kotlinx.android.synthetic.main.fragment_home.cafe_recyclerView
 
 class HomeFragment: Fragment() {
     lateinit var cafeRecyclerAdapter: CafeRecyclerAdapter
-    val datas = mutableListOf<ListData>()
+
     lateinit var cafeList: ArrayList<String>
     lateinit var cafeMap: MutableMap<String, List<String>>
+    lateinit var queryCafeMap: MutableMap<String, List<String>>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater.from(activity).inflate(R.layout.fragment_home,container,false)
@@ -40,17 +41,21 @@ class HomeFragment: Fragment() {
         val assetManager = resources.assets
         val inputStream = assetManager.open("cafe_list.txt")
         //var cafeMap = mutableMapOf("id" to listOf<String>("cafe_name", "location"))
+
         inputStream.bufferedReader().readLines().forEach {
             var tmp = it.split(',')
 
-            if (tmp[0] == "0") {
-                cafeMap = mutableMapOf(tmp[0] to listOf(tmp[1], tmp[2]))
-                cafeList = arrayListOf(tmp[1])
-            }
+            if (tmp[1] == "name") false
 
-            else if (tmp[0] != "id") {
+            else if (::cafeMap.isInitialized || ::cafeList.isInitialized) {
                 cafeMap[tmp[0]] = listOf(tmp[1], tmp[2])
                 cafeList.add(tmp[1])
+
+            }
+
+            else {
+                cafeMap = mutableMapOf(tmp[0] to listOf(tmp[1], tmp[2]))
+                cafeList = arrayListOf(tmp[1])
             }
             //cafeMap[tmp[0]] = listOf(tmp[1], tmp[2])
 
@@ -61,6 +66,7 @@ class HomeFragment: Fragment() {
             for (c_val in cafe.value) Log.d("cafe_val", c_val)
         }
 
+        //리사이클러 뷰 생성
         initRecycler(requireContext(), cafeMap)
 
         cafe_recyclerView.addItemDecoration(VerticalItemDecorator(20))
@@ -75,8 +81,26 @@ class HomeFragment: Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if(newText != "") {
+                if (::queryCafeMap.isInitialized) queryCafeMap.clear()
+                if(newText != "") { // 검색창에 키워드 작성
                     val curList = cafeList.filter { x -> x.toLowerCase().contains(newText?.toLowerCase().toString()) }
+
+                    for (i in cafeMap) {
+                        if (i.value[0] in curList) {
+                            if (::queryCafeMap.isInitialized) {
+                                queryCafeMap[i.key] = listOf(i.value[0], i.value[1])
+                            }
+
+                            else {
+                                queryCafeMap = mutableMapOf(i.key to listOf(i.value[0], i.value[1]))
+                            }
+                        }
+                    }
+                    //for (i in queryCafeMap) Log.d("query_cafe", i.value[0])
+                    initRecycler(requireContext(), queryCafeMap)
+                }
+                else { // 검색창 글을 다 지웠을 때
+                    initRecycler(requireContext(), cafeMap)
                 }
                 return true
             }
@@ -85,12 +109,17 @@ class HomeFragment: Fragment() {
     }
 
     private fun initRecycler(context: Context, cafeMap: MutableMap<String, List<String>>) {
+        var datas = mutableListOf<ListData>()
         cafeRecyclerAdapter = CafeRecyclerAdapter(context)
         cafe_recyclerView.adapter = cafeRecyclerAdapter
 
         datas.apply {
             for (cafe in cafeMap) {
-                if (cafe.key != "cafe_name" || cafe.key != "cafe" ) add(ListData(icon = R.drawable.coffee_icon, name = cafe.value[0], content = cafe.value[1]))
+                if (cafe.value[0] != "name" || cafe.value[0] != "query_name" ) {
+                    add(ListData(icon = R.drawable.coffee_icon,
+                        name = cafe.value[0],
+                        content = cafe.value[1]))
+                }
             }
 
             cafeRecyclerAdapter.datas = datas
