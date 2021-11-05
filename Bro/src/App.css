@@ -13,7 +13,6 @@ html, body{
 .wrapper{
     display:grid;
     grid-template-columns: 250px auto;
-    grid-template-rows: 100px auto;
     height: 100vh;
 }
 
@@ -27,6 +26,7 @@ html, body{
     background-color: #fcbe32;
     display: flex;
     align-items: center;
+
 }
 
 .sidebar{
@@ -35,6 +35,7 @@ html, body{
 .container{
     background-color: #e1eef6;
 }
+
 
 /* 프로필 */
 .box{
@@ -59,11 +60,11 @@ html, body{
 /* 제목 */
 .title p{
     font-size: 25px;
-    padding: 20px;
+    padding: 14px;
 }
 
 /* 사이드바*/
-ul{
+.sidebar ul{
     list-style: none;
     font-size: 25px;
     text-align: right;
@@ -71,13 +72,13 @@ ul{
     margin: 0;
 }
 
-li{
+.sidebar li{
     padding: 20px;
     padding-right: 30px;
     font-family: 'Noto Sans KR', sans-serif;
 }
 
-li:hover{
+.sidebar li:hover{
     background-color: #ff5f2e;
     filter: brightness(70%);
 }
@@ -100,13 +101,61 @@ a:hover{
     color: black;
 }
 
-/* 가게 */
+/* 테이블 */
+.current{
+    width: 150px;
+    height: 200px;
+    padding: 15px;
+    margin:25px;
+    border: 10px solid #004e66;
+    float: left;
+}
+
+.table_id {
+    margin: 0;
+}
+
+
+.current ul{
+    list-style: none;
+    font-size: 20px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+/*자리배치*/
+.w{
+    display: block;
+}
+
+.t_list{
+    width:200px;
+    height:800px;
+    border: 1px solid black;
+    margin: 30px;
+    margin-right: 0;
+    position:relative;
+    float: left;
+}
+
 .shop{
-    width: 700px;
-    height: 500px;
+    width: 1200px;
+    height: 800px;
     border: 1px solid black;
     margin: 60px;
     position: relative;
+    text-align: center;
+    display: inline-block;
+}
+
+.floor_img{
+    width: 1000px;
+    height: 700px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .table {
@@ -122,8 +171,3 @@ canvas{
     height: 100%;
     background-color: coral;
 }
-
-.photoFrame{
-    width: 100%;
-    height: 100%;
-  }
