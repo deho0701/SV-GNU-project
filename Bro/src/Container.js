@@ -1,10 +1,11 @@
 import React from 'react';
+import img from './sample1.JPG';
 
 class Container extends React.Component{
-    id=1;
     constructor(props){
         super(props);
         this.state = {
+            id: 1,
             tables: [
                 //{id:1, x:10, y:10},
                 //{id:2, x:20, y:25},
@@ -19,25 +20,28 @@ class Container extends React.Component{
                 {cid:1, name:'Yun'}
             ],
             file: '',
-            previewURL: '',
+            previewURL: {img},
             diffX: 0,
             diffY: 0,
-            shopX: 0,
-            shopY: 0,
+            shopX: 520,
+            shopY: 178,
             dragging: false,
         }
 
         this._dragStart = this._dragStart.bind(this);
         this._dragging = this._dragging.bind(this);
         this._dragEnd = this._dragEnd.bind(this);
+        
     }
 
-    componentWillReceiveProps(){
-        console.log(document.querySelector("#shop"));
-        /*this.setState({
-            shopX: document.querySelector("#shop").offsetLeft,
-            shopY: document.querySelector("#shop").offsetTop
-        })*/
+    componentWillMount(){
+        const tables = localStorage.tables;
+        if(tables){
+            this.setState({
+                tables: JSON.parse(tables),
+                id: JSON.parse(localStorage.id)
+            })          
+        }
     }
 
     handleFileInput = (e) => {
@@ -52,13 +56,37 @@ class Container extends React.Component{
         reader.readAsDataURL(file);
     }
 
+    // 자리 추가
     addTable = () => {
         const { tables } = this.state;
         this.setState({
-            tables: tables.concat({id:this.id++, x:0, y:0})
+            tables: tables.concat({id:this.state.id++, x:0, y:0})
         })
+        console.log('add');
     }
 
+    // 자리 저장
+    save = () => {
+        localStorage.previewURL = JSON.stringify(this.state.previewURL);
+        localStorage.id = JSON.stringify(this.state.id);
+        localStorage.tables = JSON.stringify(this.state.tables);
+        
+        console.log(this.state.tables);
+        console.log('saved');
+    }
+
+    // 자리 삭제
+    delete = id => {
+        console.log(id);
+        const { tables } = this.state;
+        this.setState({
+            tables: tables.filter(table => table.id !== id),
+            id: this.state.id-1
+        })
+        console.log(this.state.id);
+    }
+
+    // 자리 이동
     _dragStart(e) {
         console.log(e.target.id);
         console.log(this.state.dragging)
@@ -131,10 +159,13 @@ class Container extends React.Component{
                     <input type="file" name='imgFile' onChange={this.handleFileInput}></input>
                     <button id="save" onClick={this.save}>저장</button>
                     <div className="w">
-                        {/*<div id="t_list" className="t_list"></div>*/}
+                        <div id="t_list" className="t_list">
+                            <div className="t_ex"></div>
+                            
+                        </div>
                         <div id="shop" className="shop">
                             <p>Shop</p>
-                            <img className='floor_img' src={this.state.previewURL}></img>
+                            <img className='floor_img' src={this.state.previewURL}/>
                             {tables.map(table=>{
                             return(
                                 <div
@@ -144,7 +175,7 @@ class Container extends React.Component{
                                     onMouseDown={this._dragStart}
                                     onMouseMove={this._dragging}
                                     onMouseUp={this._dragEnd}
-                                >{table.id}</div>
+                                >{table.id}<button onClick={() => {this.delete(table.id);}}>x</button></div>
                             )})}
                         </div>
                     </div>

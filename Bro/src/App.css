@@ -139,11 +139,20 @@ a:hover{
     float: left;
 }
 
+.t_ex{
+    cursor: pointer;
+    width: 80px;
+    height: 80px;
+    border: 1px solid black;
+    margin: 60px;
+    position:absolute;
+}
+
 .shop{
     width: 1200px;
     height: 800px;
     border: 1px solid black;
-    margin: 60px;
+    margin: 30px;
     position: relative;
     text-align: center;
     display: inline-block;
