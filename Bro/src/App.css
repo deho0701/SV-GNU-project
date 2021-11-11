@@ -47,7 +47,7 @@ html, body{
     margin: 10px;
 }
 
-.profile-img{
+.profile_img{
     width : 100%;
     height: 100%;
     object-fit: cover;
@@ -175,6 +175,14 @@ a:hover{
     position:absolute;
 }
 
+/*설정*/
+.profile_i{
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+    margin: 20px;
+    
+}
 canvas{
     width: 100%;
     height: 100%;

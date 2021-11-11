@@ -20,7 +20,9 @@ class Container extends React.Component{
                 {cid:1, name:'Yun'}
             ],
             file: '',
-            previewURL: {img},
+            previewURL: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAeAB4AAD…UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//2Q==',
+            profile: '',
+            profileURL: '',
             diffX: 0,
             diffY: 0,
             shopX: 520,
@@ -38,6 +40,7 @@ class Container extends React.Component{
         const tables = localStorage.tables;
         if(tables){
             this.setState({
+                previewURL: JSON.parse(localStorage.previewURL),
                 tables: JSON.parse(tables),
                 id: JSON.parse(localStorage.id)
             })          
@@ -54,6 +57,17 @@ class Container extends React.Component{
             })
         }
         reader.readAsDataURL(file);
+    }
+    handleProfileInput = (e) => {
+        let reader = new FileReader();
+        let profile = e.target.files[0];
+        reader.onloadend = () => {
+            this.setState({
+                profile : profile,
+                profileURL : reader.result
+            })
+        }
+        reader.readAsDataURL(profile);
     }
 
     // 자리 추가
@@ -191,7 +205,19 @@ class Container extends React.Component{
                     <div className="title">
                         <p>설정</p>
                     </div>
-                    
+                    <div>
+                        <img className='profile_i' src={this.state.profileURL}/>
+                        <br/>
+                        <input type="file" name='profile' onChange={this.handleProfileInput}></input>
+                    </div>
+                    <div>
+                        <p>ID: </p>
+                        <p>가게명: </p>
+                        <p>가게주소: </p>
+                        <p>운영시간: </p>
+                        <p>테이블 이용시간: </p>
+                        <p>알람 설정</p>
+                    </div>
                 </div>
             )
         }

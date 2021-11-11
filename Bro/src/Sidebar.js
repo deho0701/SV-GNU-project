@@ -6,7 +6,7 @@ class Sidebar extends React.Component{
             <div className="sidebar">
                 <div className="profile">
                     <div className="box">
-                        <img className="profile-img" src={this.props.img} alt = 'profile' title='profile'/>
+                        <img className="profile_img" src={this.props.img} alt = 'profile' title='profile'/>
                     </div>
                     <p>{this.props.name}</p>
                 </div>
