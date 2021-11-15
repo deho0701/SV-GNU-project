@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sv_project1.MenuListActivity
 import com.example.sv_project1.R
 import com.example.sv_project1.SitPageActivity
 import com.example.sv_project1.data.ListData
@@ -54,15 +53,6 @@ class CafeRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<C
             // sit page로 이동
             itemView.setOnClickListener {
                 Intent(context, SitPageActivity::class.java).apply {
-                    putExtra("list data", item as Serializable)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }.run { context.startActivity(this) }
-            }
-
-
-            // menu로 이동
-            itemView.findViewById<Button>(R.id.btn_menu).setOnClickListener {
-                Intent(context, MenuListActivity::class.java).apply {
                     putExtra("list data", item as Serializable)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.run { context.startActivity(this) }

@@ -40,17 +40,6 @@ class CafeListActivity : AppCompatActivity() {
         // 리스트 간격
         cafe_recyclerView.addItemDecoration(VerticalItemDecorator(20))
         cafe_recyclerView.addItemDecoration(HorizontalItemDecorator(10))
-
-        cafeRecyclerAdapter.setOnItemClickListener(object : CafeRecyclerAdapter.OnItemClickListener{
-            override fun onItemClick(v: View, data: ListData, pos : Int) {
-                Toast.makeText(this@CafeListActivity, pos.toString(), Toast.LENGTH_SHORT).show()
-                Intent(this@CafeListActivity, MenuListActivity::class.java).apply {
-                    putExtra("list data", data as Serializable)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }.run { startActivity(this) }
-            }
-
-        })
     }
 
     private fun initRecycler(context: Context) {
