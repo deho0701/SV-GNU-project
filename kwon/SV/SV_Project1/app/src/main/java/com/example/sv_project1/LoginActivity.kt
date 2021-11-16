@@ -5,47 +5,53 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_login.*
-import java.io.Serializable
 
 class LoginActivity : AppCompatActivity() {
-    val TAG: String = "LoginupActivity"
+    val TAG: String = "LoginActivity"
+    var id : Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // 서버 세팅
+       /* val url = "117.16.164.14"
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        var server = retrofit.create(APIInterface::class.java)*/
 
         // 로그인 버튼
+
         btn_login.setOnClickListener {
 
-            //editText로부터 입력된 값을 받아온다
-            var id = et_id.text.toString()
-            var pw = et_pw.text.toString()
+            //test
+            Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show()
 
-            // 쉐어드로부터 저장된 id, pw 가져오기 -> nodejs 서버로 변경
-            val sharedPreference = getSharedPreferences("file name", Context.MODE_PRIVATE)
-            val savedId = sharedPreference.getString("id", "")
-            val savedPw = sharedPreference.getString("pw", "")
+            var intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                putExtra("id", id)
+            }
+            startActivity(intent)
 
-            // 유저가 입력한 id, pw값과 쉐어드로 불러온 id, pw값 비교
-            if(id == savedId && pw == savedPw){
-                // 로그인 성공 다이얼로그 보여주기
-                dialog("success")
-                Intent(this@LoginActivity, MainActivity::class.java).apply {
-                    putExtra("selected data", id)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }.run { startActivity(this) }
-            }
-            else{
-                // 로그인 실패 다이얼로그 보여주기
-                dialog("fail")
-            }
+            /*server.getRequest("ID").enqueue(object: Callback<ResponseDC> {
+                override fun onResponse(call: Call<ResponseDC>, response: Response<ResponseDC>) {
+                    val ID = response?.body().toString()
+                    Log.d("response : ", ID)
+                }
+
+                override fun onFailure(call: Call<ResponseDC>, t: Throwable) {
+                    Toast.makeText(this@LoginActivity, "없는 아이디 입니다.", Toast.LENGTH_SHORT).show()
+                }
+            })*/
         }
 
-        // 회원가입 버튼
+        // 회원가입
         btn_signup.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
@@ -68,8 +74,14 @@ class LoginActivity : AppCompatActivity() {
         var dialog_listener = object: DialogInterface.OnClickListener{
             override fun onClick(dialog: DialogInterface?, which: Int) {
                 when(which){
-                    DialogInterface.BUTTON_POSITIVE ->
+                    DialogInterface.BUTTON_POSITIVE -> {
                         Log.d(TAG, "")
+                        var intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                            putExtra("id", id)
+                        }
+                        startActivity(intent)
+                    }
+
                 }
             }
         }

@@ -32,7 +32,9 @@ class PaymentPageActivity : AppCompatActivity() {
 
         val data = intent.getSerializableExtra("selected data") as SitSelectData
         var peopleStr = ""
-        val price : Int = 3000
+        val price = 3000
+
+        val id = 1
 
         print(data.sit)
 
@@ -49,11 +51,49 @@ class PaymentPageActivity : AppCompatActivity() {
         val sitCompleteData = SitCompleteData(data.icon, data.name, data.year, data.month, data.day, data.hour, data.minute, peopleStr, price)
 
         payBtn.setOnClickListener {
-            Intent(this@PaymentPageActivity, CompletePageActivity::class.java).apply {
-                putExtra("completed data", sitCompleteData as Serializable)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }.run { startActivity(this) }
+            var builder = AlertDialog.Builder(this)
+            builder.setTitle("결제 확인")
+            builder.setMessage("선택하진 예약 정보로 %d원 결제하시겠습니까?".format(price))
+
+            var listener = object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    when (which) {
+                        DialogInterface.BUTTON_NEGATIVE ->{
+
+                        }
+                        DialogInterface.BUTTON_POSITIVE ->{
+                            pay_complete_dialog(id)
+                        }
+                    }
+                }
+            }
+            builder.setPositiveButton("결제", listener)
+            builder.setNegativeButton("취소", listener)
+
+            builder.show()
         }
+    }
+
+    private fun pay_complete_dialog(id: Int) {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("결제 완료!")
+        builder.setMessage("선택하신 정보로 예약이 완료되었습니다.")
+
+        var listener = object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                when (which) {
+                    DialogInterface.BUTTON_NEUTRAL ->{
+                        val intent = Intent(this@PaymentPageActivity, MainActivity::class.java).apply {
+                            putExtra("id", id)
+                        }
+                        startActivity(intent)
+                    }
+                }
+            }
+        }
+        builder.setNeutralButton("확인", listener)
+
+        builder.show()
     }
 }
 

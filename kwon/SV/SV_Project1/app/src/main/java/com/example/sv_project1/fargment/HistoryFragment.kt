@@ -43,7 +43,7 @@ class HistoryFragment : Fragment() {
         history_recyclerView.adapter = historyRecyclerAdapter
 
         datas.apply {
-            add(ListData(icon = R.drawable.coffee_icon, name = "history1", content = "history content1"))
+            add(ListData(icon = R.drawable.coffee_icon, name = "history1", content = "yyyy | MM | dd |  HH : mm"))
             add(ListData(icon = R.drawable.coffee_icon, name = "history2", content = "history content2"))
             add(ListData(icon = R.drawable.coffee_icon, name = "history3", content = "history content3"))
             add(ListData(icon = R.drawable.coffee_icon, name = "history4", content = "history content4"))

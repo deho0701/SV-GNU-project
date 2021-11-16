@@ -1,5 +1,6 @@
 package com.example.sv_project1
 
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sv_project1.fargment.HistoryFragment
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        var id = intent.getIntExtra("id", -1)
 
         initNaviBar()
     }
