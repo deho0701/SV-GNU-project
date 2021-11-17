@@ -17,6 +17,7 @@ import com.example.sv_project1.data.SitSelectData
 import kotlinx.android.synthetic.main.activity_sit_page.*
 import java.io.Serializable
 import java.text.SimpleDateFormat
+
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,6 +27,9 @@ class SitPageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sit_page)
 
         val data = intent.getSerializableExtra("list data") as ListData
+
+        // 배경설정
+        //iv_blueprint.setImageResource()
 
         val sitView = findViewById<ConstraintLayout>(R.id.sitLayout)
         iv_profile.setImageResource(data.icon)
@@ -53,7 +57,13 @@ class SitPageActivity : AppCompatActivity() {
                 sitData.month = month
                 sitData.day = dayOfMonth
             }
-            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH)).show()
+            DatePickerDialog(this, dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+            ).apply {
+                datePicker.minDate = System.currentTimeMillis()
+            }.show()
         }
 
         btn_time.setOnClickListener {
@@ -63,7 +73,12 @@ class SitPageActivity : AppCompatActivity() {
                 sitData.hour = hourOfDay
                 sitData.minute = minute
             }
-            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),true).show()
+            TimePickerDialog(this,
+                timeSetListener,
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE),
+                true
+            ).show()
         }
 
         //sit button set
@@ -74,13 +89,17 @@ class SitPageActivity : AppCompatActivity() {
         addDataList(btn_data_list, 100f, 100f, 100)
         addDataList(btn_data_list, 200f, 100f, 100)
         addDataList(btn_data_list, 100f, 200f, 100)
+        addDataList(btn_data_list, 1200f, 600f, 100)
         createButtons(sitView, btn_list, btn_data_list, chk_list)
 
 
         completeBtn.setOnClickListener {
-            for (i in 0 until chk_list.size) if (chk_list[i]) selectSits.add(i)
-            sitData.sit = selectSits
-            showAlert(sitData)
+            if (sitData.year != 0 && sitData.hour != 0 ) {
+                for (i in 0 until chk_list.size) if (chk_list[i]) selectSits.add(i)
+                sitData.sit = selectSits
+                showAlert(sitData)
+            }
+
         }
     }
 
@@ -134,7 +153,7 @@ class SitPageActivity : AppCompatActivity() {
                     putExtra("selected data", selectData as Serializable)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }.run { startActivity(this) }
-             }
+            }
             .setNegativeButton("취소") { dialogInterface: DialogInterface, i: Int -> }
             .show()
 
