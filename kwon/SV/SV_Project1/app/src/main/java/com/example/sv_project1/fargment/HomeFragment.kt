@@ -40,6 +40,7 @@ class HomeFragment: Fragment() {
         //cafe list 불러오기
         val assetManager = resources.assets
         val inputStream = assetManager.open("cafe_list.txt")
+        //var cafeMap = mutableMapOf("id" to listOf<String>("cafe_name", "location"))
 
         inputStream.bufferedReader().readLines().forEach {
             var tmp = it.split(',')
@@ -56,6 +57,8 @@ class HomeFragment: Fragment() {
                 cafeMap = mutableMapOf(tmp[0] to listOf(tmp[1], tmp[2]))
                 cafeList = arrayListOf(tmp[1])
             }
+            //cafeMap[tmp[0]] = listOf(tmp[1], tmp[2])
+
         }
 
         for (cafe in cafeMap) {
@@ -77,10 +80,12 @@ class HomeFragment: Fragment() {
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 if (::queryCafeMap.isInitialized) queryCafeMap.clear()
                 if(newText != "") { // 검색창에 키워드 작성
-                    val curList = cafeList.filter { x -> x.toLowerCase().contains(newText?.toLowerCase().toString()) }
+                    val tmpStr : CharSequence = newText
+                    val curList = cafeList.filter { x -> x.contains(tmpStr) }
+                    //val curList = cafeList.filter { x -> x.toLowerCase().contains(newText?.toLowerCase().toString()) }
 
                     for (i in cafeMap) {
                         if (i.value[0] in curList) {
@@ -93,6 +98,7 @@ class HomeFragment: Fragment() {
                             }
                         }
                     }
+                    //for (i in queryCafeMap) Log.d("query_cafe", i.value[0])
                     initRecycler(requireContext(), queryCafeMap)
                 }
                 else { // 검색창 글을 다 지웠을 때
@@ -111,10 +117,20 @@ class HomeFragment: Fragment() {
 
         datas.apply {
             for (cafe in cafeMap) {
+                val icon = resources.getIdentifier("icon_"+cafe.key, "drawable", context.packageName)
+                //Log.d("cafe_icon", icon.toString())
                 if (cafe.value[0] != "name" || cafe.value[0] != "query_name" ) {
-                    add(ListData(icon = R.drawable.coffee_icon,
-                        name = cafe.value[0],
-                        content = cafe.value[1]))
+                    if (icon != 0) {
+                        add(ListData(icon = icon,
+                            name = cafe.value[0],
+                            content = cafe.value[1]))
+                    }
+                    // no icon image
+                    else {
+                        add(ListData(icon = R.drawable.default_cafe_icon,
+                            name = cafe.value[0],
+                            content = cafe.value[1]))
+                    }
                 }
             }
 
