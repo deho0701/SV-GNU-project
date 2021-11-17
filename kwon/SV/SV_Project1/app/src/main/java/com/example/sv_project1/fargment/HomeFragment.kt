@@ -80,10 +80,12 @@ class HomeFragment: Fragment() {
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 if (::queryCafeMap.isInitialized) queryCafeMap.clear()
                 if(newText != "") { // 검색창에 키워드 작성
-                    val curList = cafeList.filter { x -> x.toLowerCase().contains(newText?.toLowerCase().toString()) }
+                    val tmpStr : CharSequence = newText
+                    val curList = cafeList.filter { x -> x.contains(tmpStr) }
+                    //val curList = cafeList.filter { x -> x.toLowerCase().contains(newText?.toLowerCase().toString()) }
 
                     for (i in cafeMap) {
                         if (i.value[0] in curList) {
@@ -115,10 +117,20 @@ class HomeFragment: Fragment() {
 
         datas.apply {
             for (cafe in cafeMap) {
+                val icon = resources.getIdentifier("icon_"+cafe.key, "drawable", context.packageName)
+                //Log.d("cafe_icon", icon.toString())
                 if (cafe.value[0] != "name" || cafe.value[0] != "query_name" ) {
-                    add(ListData(icon = R.drawable.coffee_icon,
-                        name = cafe.value[0],
-                        content = cafe.value[1]))
+                    if (icon != 0) {
+                        add(ListData(icon = icon,
+                            name = cafe.value[0],
+                            content = cafe.value[1]))
+                    }
+                    // no icon image
+                    else {
+                        add(ListData(icon = R.drawable.default_cafe_icon,
+                            name = cafe.value[0],
+                            content = cafe.value[1]))
+                    }
                 }
             }
 
