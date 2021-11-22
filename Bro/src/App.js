@@ -4,6 +4,8 @@ import "./App.css";
 import Sidebar from "./Sidebar";
 import Container from "./Container";
 
+
+
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -11,9 +13,15 @@ class App extends React.Component {
       Shop: {name:'북카페', img:img},
       mode: 'reservation'
     }
+    
+  }
+
+  componentWillMount(){
+
   }
 
   render() {
+    
     console.log(this.state.Shop.name);
     return (
       <div className="wrapper">

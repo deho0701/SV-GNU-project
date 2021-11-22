@@ -2,6 +2,7 @@ import React from 'react';
 
 class Sidebar extends React.Component{
     render(){
+        console.log('side')
         return(
             <div className="sidebar">
                 <div className="profile">

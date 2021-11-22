@@ -1,11 +1,16 @@
 import React from 'react';
 import img from './sample1.JPG';
+import Setting from './Setting';
+import PopupDom from './PopupDom';
+import PopupPostCode from './PopupPostCode';
+import axios from 'axios';
 
 class Container extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             id: 1,
+            setting:{name:'aa'},
             tables: [
                 //{id:1, x:10, y:10},
                 //{id:2, x:20, y:25},
@@ -25,15 +30,26 @@ class Container extends React.Component{
             profileURL: '',
             diffX: 0,
             diffY: 0,
-            shopX: 520,
-            shopY: 178,
+            shopX: 288,
+            shopY: 176,
             dragging: false,
+            isOpenPopup : false
         }
 
         this._dragStart = this._dragStart.bind(this);
         this._dragging = this._dragging.bind(this);
         this._dragEnd = this._dragEnd.bind(this);
+        this.openPopup = this.openPopup.bind(this);
+        this.closePopup = this.closePopup.bind(this);
         
+    }
+
+    callApi = async ()=>{
+        axios.get("http://117.16.164.14:5050/reserve").then((res)=> console.log(res));
+    };
+
+    componentDidMount(){
+        this.callApi();
     }
 
     componentWillMount(){
@@ -74,7 +90,7 @@ class Container extends React.Component{
     addTable = () => {
         const { tables } = this.state;
         this.setState({
-            tables: tables.concat({id:this.state.id++, x:0, y:0})
+            tables: tables.concat({ id:this.state.id++, x:0, y:0})
         })
         console.log('add');
     }
@@ -85,6 +101,9 @@ class Container extends React.Component{
         localStorage.id = JSON.stringify(this.state.id);
         localStorage.tables = JSON.stringify(this.state.tables);
         
+
+        axios.post("http://117.16.164.14:5050/reserve", this.state.tables).then((res) => console.log(res));
+
         console.log(this.state.tables);
         console.log('saved');
     }
@@ -137,10 +156,33 @@ class Container extends React.Component{
 
     }
 
+    onChangetext = (e) => {
+        this.setState({
+
+        });
+    }
+
+	// 팝업창 열기
+    openPopup() {
+        this.setState({
+            isOpenPopup: true
+        })
+    }
+
+	// 팝업창 닫기
+    closePopup() {
+        this.setState({
+            isOpenPopup: false
+        })
+    }
+
+
 
     render(){
         console.log(this.props.mode);
         console.log(this.state.reservation);
+        console.log(this.state.tables);
+        
         const {tables, reservation, customer} = this.state;
         if(this.props.mode === 'reservation'){
             return (
@@ -173,10 +215,7 @@ class Container extends React.Component{
                     <input type="file" name='imgFile' onChange={this.handleFileInput}></input>
                     <button id="save" onClick={this.save}>저장</button>
                     <div className="w">
-                        <div id="t_list" className="t_list">
-                            <div className="t_ex"></div>
-                            
-                        </div>
+                        
                         <div id="shop" className="shop">
                             <p>Shop</p>
                             <img className='floor_img' src={this.state.previewURL}/>
@@ -212,12 +251,20 @@ class Container extends React.Component{
                     </div>
                     <div>
                         <p>ID: </p>
-                        <p>가게명: </p>
-                        <p>가게주소: </p>
+                        <p>가게명: <input onChange={this.onChangetext}/></p>
+                        <p>가게주소: <input placeholder={this.state.setting.name} onClick={this.openPopup} readOnly/>
+                            <button type='button' id="popupDom" onClick={this.openPopup}>주소찾기</button>
+                            {this.state.isOpenPopup && 
+                                <PopupDom>
+                                    <PopupPostCode onClose={this.closePopup} />
+                                </PopupDom>
+                            }
+                            </p>
                         <p>운영시간: </p>
                         <p>테이블 이용시간: </p>
                         <p>알람 설정</p>
                     </div>
+                    
                 </div>
             )
         }
