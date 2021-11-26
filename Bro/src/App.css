@@ -149,7 +149,7 @@ a:hover{
 }
 
 .shop{
-    width: 1200px;
+    width: 90%;
     height: 800px;
     border: 1px solid black;
     margin: 30px;
@@ -159,7 +159,6 @@ a:hover{
 }
 
 .floor_img{
-    width: 1000px;
     height: 700px;
     position: absolute;
     top: 50%;
@@ -177,7 +176,7 @@ a:hover{
     position:absolute;
 }
 
-.deleteButton{
+.btn_style, ::-webkit-file-upload-button{
 /* CSS */
     background-color: #FFFFFF;
     border: 0;
@@ -188,7 +187,6 @@ a:hover{
     font-size: .5rem;
     font-weight: 600;
     line-height: 1.25rem;
-    float: right;
     text-align: center;
     text-decoration: none #D1D5DB solid;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -196,17 +194,30 @@ a:hover{
     touch-action: manipulation;
 }
 
-.deleteButton:hover {
+.btn_style:hover {
     background-color: rgb(157, 158, 160);
 }
 
-.deleteButton:focus {
+.btn_style:focus {
     outline: 2px solid transparent;
     outline-offset: 2px;
 }
 
-.deleteButton:focus-visible {
+.btn_style:focus-visible {
     box-shadow: none;
+}
+
+#save_btn {
+    float:right;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 3rem;
+}
+#add_btn, input, ::-webkit-file-upload-button{
+    float:left;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 3rem;
 }
 
 

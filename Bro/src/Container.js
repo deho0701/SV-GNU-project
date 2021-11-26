@@ -30,11 +30,11 @@ class Container extends React.Component{
     }
 
     callApi = async ()=>{
-        axios.get("http://117.16.164.14:5050/reserve").then((res)=> console.log(res));
+        //axios.get("http://117.16.164.14:5050/ok_seat").then((res)=> console.log(res));
     };
 
     componentDidMount(){
-        this.callApi();
+        //this.callApi();
     }
 
     
@@ -80,16 +80,17 @@ class Container extends React.Component{
 
     render(){
         console.log(this.props.mode);
+        console.log(this.props.name);
         
         const {tables, reservation, customer} = this.state;
         if(this.props.mode === 'reservation'){
             return (
-                <Reserve/>
+                <Reserve name={this.props.name}/>
             ) 
         }
         else if(this.props.mode === 'edit'){
             return(
-                <Edit/>
+                <Edit name={this.props.name}/>
             )
         }
         else if(this.props.mode === 'setup'){

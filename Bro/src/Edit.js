@@ -16,7 +16,7 @@ class Edit extends React.Component{
             diffX: 0,
             diffY: 0,
             shopX: 288,
-            shopY: 176,
+            shopY: 152,
             dragging: false
         }
 
@@ -25,10 +25,19 @@ class Edit extends React.Component{
         this._dragEnd = this._dragEnd.bind(this);
     }
 
+    callApi = async ()=>{
+        axios.post("http://117.16.164.14:5050/web/pre_seat", {name:'bookcafe'}).then((res)=> console.log(res));
+    };
+
+    componentDidMount(){
+        this.callApi();
+    }
+
     // 도면 삽입
     handleFileInput = (e) => {
         let reader = new FileReader();
         let file = e.target.files[0];
+        console.log(file);
         reader.onloadend = () => {
             this.setState({
                 file : file,
@@ -60,24 +69,17 @@ class Edit extends React.Component{
 
     // 자리 저장
     save = () => {
-        //로컬에저장
-        localStorage.previewURL = JSON.stringify(this.state.previewURL);
-        localStorage.id = JSON.stringify(this.state.id);
-        localStorage.tables = JSON.stringify(this.state.tables);
         
         // 서버에 데이터 저장
-        const url = "http://117.16.164.14:5050/web/pre_seat";
-        const fd = new FormData();
-        fd.append('shopimg', this.state.previewURL);
-        fd.append('tables', this.state.tables);
-        fd.append('shopX', JSON.stringify(this.state.shopX));
-        fd.append('shopY', this.state.shopY);
-        axios.post(url, fd, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then((res)=>console.log(res));
-        //axios.post("http://117.16.164.14:5050/reserve", this.state.tables).then((res) => console.log(res));
+        const url = "http://117.16.164.14:5050/web/seat";
+        var data = {};
+        data.name = this.props.name;
+        data.tables = this.state.tables;
+        data.shopX = this.state.shopX;
+        data.shopY = this.state.shopY;
+        console.log(JSON.stringify(data));
+        axios.post(url, data).then((res)=>console.log(res));
+        //axios.post("http://117.16.164.14:5050/web/seat", {why:'andam'}).then((res) => console.log(res));
 
         console.log(this.state.tables);
         console.log('saved');
@@ -117,7 +119,7 @@ class Edit extends React.Component{
             this.setState({
                 tables: this.state.tables.map(
                     table=> table.id === Number(e.target.id)
-                    ? {id:table.id, x:left, y:top}
+                    ? {id:table.id, x:Math.round(left), y:Math.round(top)}
                     : table)
             });
         }
@@ -137,13 +139,15 @@ class Edit extends React.Component{
                     <div className="title">
                         <p>자리 배치</p>
                     </div>
-                    <button onClick={this.addTable}>추가</button>
-                    <input type="file" name='imgFile' onChange={this.handleFileInput}></input>
-                    <button id="save" onClick={this.save}>저장</button>
+                    
                     <div className="w">
-                        
+
                         <div id="shop" className="shop">
-                            <p>Shop</p>
+                            <button id='add_btn' className='btn_style' onClick={this.addTable}>추가</button>
+                            <input type="file" name='imgFile' onChange={this.handleFileInput}></input>
+                            Shop
+                            <button id="save_btn" className='btn_style' onClick={this.save}>저장</button>
+                            
                             <img className='floor_img' src={this.state.previewURL}/>
                             {this.state.tables.map(table=>{
                             return(
@@ -154,7 +158,7 @@ class Edit extends React.Component{
                                     onMouseDown={this._dragStart}
                                     onMouseMove={this._dragging}
                                     onMouseUp={this._dragEnd}
-                                >{table.id}<button className='deleteButton' onClick={() => {this.delete(table.id);}}>x</button></div>
+                                >{table.id}<button id='delete_btn' className='btn_style' onClick={() => {this.delete(table.id);}}>x</button></div>
                             )})}
                         </div>
                     </div>

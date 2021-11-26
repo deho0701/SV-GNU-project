@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 class Reserve extends React.Component{
     constructor(props){
@@ -17,8 +18,21 @@ class Reserve extends React.Component{
         }
     }
 
+    callApi = async ()=>{
+        const shopID = {};
+        shopID.name = this.props.name;
+        console.log(shopID);
+        axios.post("http://117.16.164.14:5050/web/reserve", shopID).then((res)=> console.log(res));
+    };
+
+    componentDidMount(){
+        console.log(this.props.name);
+        this.callApi();
+    }
+
     render(){
         console.log(this.state.reservation);
+        console.log(this.props.name);
         const {tables, reservation} = this.state;
         return(
             <div id="container" className="container">

@@ -10,7 +10,7 @@ class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      Shop: {name:'북카페', img:img},
+      shop: {name:'bookcafe', img:img},
       mode: 'reservation'
     }
     
@@ -21,18 +21,17 @@ class App extends React.Component {
   }
 
   render() {
-    
-    console.log(this.state.Shop.name);
     return (
       <div className="wrapper">
         <Sidebar
-          name={this.state.Shop.name}
-          img={this.state.Shop.img}
+          name={this.state.shop.name}
+          img={this.state.shop.img}
           onChangePage={function(mode){
             this.setState({mode:mode})
           }.bind(this)}
         />
         <Container
+          name={this.state.shop.name}
           mode={this.state.mode}
         />
       </div>
