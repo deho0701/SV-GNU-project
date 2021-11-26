@@ -168,12 +168,47 @@ a:hover{
 }
 
 .table {
+    text-align: left;
     cursor: pointer;
     width: 80px;
     height: 80px;
     border: 1px solid black;
+    padding: 6px;
     position:absolute;
 }
+
+.deleteButton{
+/* CSS */
+    background-color: #FFFFFF;
+    border: 0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #111827;
+    font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: .5rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    float: right;
+    text-align: center;
+    text-decoration: none #D1D5DB solid;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.deleteButton:hover {
+    background-color: rgb(157, 158, 160);
+}
+
+.deleteButton:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+.deleteButton:focus-visible {
+    box-shadow: none;
+}
+
 
 /*설정*/
 .profile_i{
