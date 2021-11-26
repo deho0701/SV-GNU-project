@@ -37,7 +37,7 @@ class PaymentPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment_page)
 
-        val id = 1
+        val id = "hoho"
 
         val data = intent.getSerializableExtra("selected data") as SitSelectData
         var peopleStr = ""
@@ -67,7 +67,7 @@ class PaymentPageActivity : AppCompatActivity() {
         }
     }
 
-    private fun postTest(booker_id: Int, cafe_name: String, tables: ArrayList<Int>, time: String) {
+    private fun postTest(booker_id: String, cafe_name: String, tables: ArrayList<Int>, time: String) {
         val bookData = BookData(booker_id, cafe_name, tables, time)
         val callPostBook = RetrofitClass.api.postBookData(bookData)
 

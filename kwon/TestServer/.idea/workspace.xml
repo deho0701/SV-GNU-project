@@ -14,10 +14,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8572b9b5-e4f9-412b-90d3-adeafd745d68" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/PaymentPageActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/PaymentPageActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/SitPageActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/SitPageActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/fargment/HistoryFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/fargment/HistoryFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/server/CafeData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/server/CafeData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/server/ServerInterface.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../SV/SV_Project1/app/src/main/java/com/example/sv_project1/server/ServerInterface.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +25,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Hyemi\.android\avd\New_Device_API_30.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[R3CN2091M4X]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />

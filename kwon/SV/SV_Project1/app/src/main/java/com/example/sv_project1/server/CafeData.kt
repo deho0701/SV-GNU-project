@@ -19,7 +19,7 @@ data class CafeData(
 
 data class BookData(
     @SerializedName("id")
-    val booker_id: Int,
+    val booker_id: String,
     @SerializedName("store_name")
     val cafe_name: String,
     val tables: ArrayList<Int>,
@@ -28,6 +28,14 @@ data class BookData(
 
 data class HistoryNumData(
     @SerializedName("store_name")
-    val id: Int,
+    val id: String,
     val history_num: Int,
+)
+
+data class HistoryData(
+    @SerializedName("id")
+    val id: String,
+    @SerializedName("store_name")
+    val cafe_name: String,
+    val date: String
 )

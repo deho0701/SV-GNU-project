@@ -14,7 +14,7 @@ interface ServerInterface {
 
     @GET("history_num")
     fun getHistoryNum(
-        @Query("id") id:Int
+        @Query("id") id:String
     ): Call<HistoryNumData>
 
     @GET("sit")
@@ -25,9 +25,9 @@ interface ServerInterface {
 
     @GET("history")
     fun getHistories(
-        @Query("id") id:Int,
-        @Query("history_num") histoty_num:Int
-    ): Call<BookData>
+        @Query("id") id:String,
+        @Query("history_id") history_id:Int
+    ): Call<HistoryData>
 
 
     @POST("pay")

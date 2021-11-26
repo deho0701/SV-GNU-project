@@ -37,8 +37,8 @@ class HistoryFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         history_recyclerView.layoutManager = LinearLayoutManager(activity)
-        initRecycler(requireContext(), "test", "test")
-        val id = 1
+        initRecycler(requireContext())
+        val id = "hoho"
         historyNum(id)
 
         history_recyclerView.addItemDecoration(VerticalItemDecorator(20))
@@ -46,20 +46,12 @@ class HistoryFragment : Fragment() {
 
     }
 
-    private fun initRecycler(context: Context, name: String, date: String) {
+    private fun initRecycler(context: Context) {
         historyRecyclerAdapter = HistoryRecyclerAdapter(context)
         history_recyclerView.adapter = historyRecyclerAdapter
-
-        datas.apply {
-            add(ListData(icon = R.drawable.coffee_icon, name = name, content = date))
-
-            historyRecyclerAdapter.datas = datas
-            historyRecyclerAdapter.notifyDataSetChanged()
-        }
-
     }
 
-    private fun historyNum(id: Int) {
+    private fun historyNum(id: String) {
         val callGetNum = RetrofitClass.api.getHistoryNum(id)
 
         callGetNum.enqueue(object : Callback<HistoryNumData> {
@@ -85,24 +77,24 @@ class HistoryFragment : Fragment() {
         })
     }
 
-    private fun getHistoties(id: Int, history_num: Int) {
+    private fun getHistoties(id: String, history_num: Int) {
 
         for (history_id in 1..history_num){
             val callGetStudent = RetrofitClass.api.getHistories(id, history_id)
 
-            callGetStudent.enqueue(object : Callback<BookData> {
+            callGetStudent.enqueue(object : Callback<HistoryData> {
                 override fun onResponse(
-                    call: Call<BookData>,
-                    response: Response<BookData>
+                    call: Call<HistoryData>,
+                    response: Response<HistoryData>
                 ) {
                     if (response.isSuccessful) { // <--> response.code == 200
 
                         Log.d("Server call", call.request().toString())
 
                         val name = response.body()!!.cafe_name
-                        val date = response.body()!!.time
+                        val date = response.body()!!.date
 
-                        Log.d("Server success", response.body().toString())
+                        Log.d("Server success history", response.body().toString())
 
                         datas.apply {
                             add(ListData(icon = R.drawable.coffee_icon, name = name, content = date))
@@ -118,7 +110,7 @@ class HistoryFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<BookData>, t: Throwable) {
+                override fun onFailure(call: Call<HistoryData>, t: Throwable) {
                     Log.d("Server fail", t.toString())
                     Log.d("Server fail code", "code: 500")
                 }
