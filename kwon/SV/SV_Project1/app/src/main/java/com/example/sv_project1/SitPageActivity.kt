@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
@@ -14,29 +15,34 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.sv_project1.data.ListData
 import com.example.sv_project1.data.SitData
 import com.example.sv_project1.data.SitSelectData
+import com.example.sv_project1.server.RetrofitClass
+import com.example.sv_project1.server.CafeData
+import com.example.sv_project1.server.TableNumData
 import kotlinx.android.synthetic.main.activity_sit_page.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.Serializable
 import java.text.SimpleDateFormat
-
 import java.util.*
 import kotlin.collections.ArrayList
 
 class SitPageActivity : AppCompatActivity() {
+
+    private var tableNum = 0
+    private var dataMap = mutableMapOf(0 to listOf(0f))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sit_page)
 
         val data = intent.getSerializableExtra("list data") as ListData
 
-        // 배경설정
-        //iv_blueprint.setImageResource()
-
         val sitView = findViewById<ConstraintLayout>(R.id.sitLayout)
         iv_profile.setImageResource(data.icon)
         tv_profile_name.text = data.name
 
         var selectSits = ArrayList<Int>()
-
 
         //time set
         val current : Long = System.currentTimeMillis()
@@ -57,28 +63,17 @@ class SitPageActivity : AppCompatActivity() {
                 sitData.month = month
                 sitData.day = dayOfMonth
             }
-            DatePickerDialog(this, dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-            ).apply {
-                datePicker.minDate = System.currentTimeMillis()
-            }.show()
+            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH)).show()
         }
 
         btn_time.setOnClickListener {
             val cal = Calendar.getInstance()
             val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                btn_time.text = "${hourOfDay} : ${minute}"
+                btn_time.text = "$hourOfDay : $minute"
                 sitData.hour = hourOfDay
                 sitData.minute = minute
             }
-            TimePickerDialog(this,
-                timeSetListener,
-                cal.get(Calendar.HOUR_OF_DAY),
-                cal.get(Calendar.MINUTE),
-                true
-            ).show()
+            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),true).show()
         }
 
         //sit button set
@@ -86,32 +81,36 @@ class SitPageActivity : AppCompatActivity() {
         val chk_list = ArrayList<Boolean>()
         val btn_data_list = ArrayList<SitData>()
 
-        addDataList(btn_data_list, 100f, 100f, 100)
-        addDataList(btn_data_list, 200f, 100f, 100)
-        addDataList(btn_data_list, 100f, 200f, 100)
-        addDataList(btn_data_list, 1200f, 600f, 100)
-        createButtons(sitView, btn_list, btn_data_list, chk_list)
+        // server access
+        tableNum(data.name, sitView, btn_list, btn_data_list, chk_list)
+
+        //addDataList(btn_data_list, 100f, 100f, 100)
+        //addDataList(btn_data_list, 200f, 100f, 100)
+        //addDataList(btn_data_list, 100f, 200f, 100)
+
+        //createButtons(sitView, btn_list, btn_data_list, chk_list)
+
+
 
 
         completeBtn.setOnClickListener {
-            if (sitData.year != 0 && sitData.hour != 0 ) {
-                for (i in 0 until chk_list.size) if (chk_list[i]) selectSits.add(i)
-                sitData.sit = selectSits
-                showAlert(sitData)
-            }
-
+            selectSits.clear() // 자리 중복
+            for (i in 0 until chk_list.size) if (chk_list[i]) selectSits.add(i+1)
+            sitData.sit = selectSits
+            Log.d("chk", chk_list.toString())
+            showAlert(sitData)
         }
     }
 
 
 
-    fun addDataList(dataList: ArrayList<SitData>, x: Float, y: Float, size: Int) {
+    private fun addDataList(dataList: ArrayList<SitData>, x: Float, y: Float, size: Int) {
         var data = SitData(x, y, size)
         dataList.add(data)
     }
 
 
-    fun createButton(sitView: ConstraintLayout, buttons: ArrayList<Button>, x: Float, y: Float, size: Int, check_list: ArrayList<Boolean>){
+    private fun createButton(sitView: ConstraintLayout, buttons: ArrayList<Button>, x: Float, y: Float, size: Int, check_list: ArrayList<Boolean>){
         buttons.add(Button(this))
         val index = buttons.size - 1
         sitView.addView(buttons[index])
@@ -138,9 +137,10 @@ class SitPageActivity : AppCompatActivity() {
         }
     }
 
-    fun createButtons(sitView: ConstraintLayout, buttons: ArrayList<Button>, sitDatas: ArrayList<SitData>, checks: ArrayList<Boolean>) {
+    private fun createButtons(sitView: ConstraintLayout, buttons: ArrayList<Button>, sitDatas: ArrayList<SitData>, checks: ArrayList<Boolean>) {
         for(i in sitDatas) {
             createButton(sitView, buttons, i.x, i.y, i.size, checks)
+            Log.d("x, y", i.x.toString() + i.y.toString())
         }
     }
 
@@ -163,5 +163,80 @@ class SitPageActivity : AppCompatActivity() {
 
     }
 
-}
+    private fun tableNum(cafe_name: String,
+                         sitView: ConstraintLayout,
+                         btn_list: ArrayList<Button>,
+                         btn_data_list: ArrayList<SitData>,
+                         chk_list: ArrayList<Boolean>) {
+        val callGetNum = RetrofitClass.api.getTableNum(cafe_name)
 
+        callGetNum.enqueue(object : Callback<TableNumData> {
+            override fun onResponse(call: Call<TableNumData>, response: Response<TableNumData>) {
+                if (response.isSuccessful) { // <--> response.code == 200
+
+                    Log.d("Server table response", response.body().toString())
+                    tableNum = response.body()!!.table_num
+                    Log.d("Server table num", tableNum.toString())
+                    getTableToServer(cafe_name, tableNum, sitView, btn_list, btn_data_list, chk_list)
+
+                } else { // code == 400
+                    // 실패 처리
+                    Log.d("Server fail", "code: 400, table num")
+                }
+            }
+
+            override fun onFailure(call: Call<TableNumData>, t: Throwable) {
+                Log.d("Server fail", t.toString())
+                Log.d("Server fail code", "code: 500")
+            }
+
+        })
+    }
+
+    private fun getTableToServer(cafe_name: String,
+                                 tableNum: Int,
+                                 sitView: ConstraintLayout,
+                                 btn_list: ArrayList<Button>,
+                                 btn_data_list: ArrayList<SitData>,
+                                 chk_list: ArrayList<Boolean>) {
+
+        for (table_id in 1..tableNum){
+            val callGetStudent = RetrofitClass.api.getUser(cafe_name, table_id)
+
+            callGetStudent.enqueue(object : Callback<CafeData> {
+                override fun onResponse(
+                    call: Call<CafeData>,
+                    response: Response<CafeData>
+                ) {
+                    if (response.isSuccessful) { // <--> response.code == 200
+
+                        Log.d("Server call", call.request().toString())
+
+                        val id = response.body()!!.table_id
+                        val x = response.body()!!.table_x
+                        val y = response.body()!!.table_y
+
+                        dataMap[id] = listOf(x, y)
+                        Log.d("Server success", response.body().toString())
+
+                        Log.d("Mapped table", "$id: "+dataMap[id])
+
+                        addDataList(btn_data_list, x, y, 100)
+
+                        createButton(sitView, btn_list, x, y, 100, chk_list)
+
+
+                    } else { // code == 400
+                        // 실패 처리
+                        Log.d("Server fail", "code: 400")
+                    }
+                }
+
+                override fun onFailure(call: Call<CafeData>, t: Throwable) {
+                    Log.d("Server fail", t.toString())
+                    Log.d("Server fail code", "code: 500")
+                }
+            })
+        }
+    }
+}
