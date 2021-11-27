@@ -1,4 +1,4 @@
-package com.example.sv_project1.data
+package com.example.svproject1.data
 
 class SitData(
     var x : Float,

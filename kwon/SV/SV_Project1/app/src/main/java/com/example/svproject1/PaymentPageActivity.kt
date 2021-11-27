@@ -1,4 +1,4 @@
-package com.example.sv_project1
+package com.example.svproject1
 
 
 import android.content.DialogInterface
@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.sv_project1.data.SitCompleteData
-import com.example.sv_project1.data.SitSelectData
-import com.example.sv_project1.server.BookData
-import com.example.sv_project1.server.RetrofitClass
+import com.example.svproject1.data.SitCompleteData
+import com.example.svproject1.data.SitSelectData
+import com.example.svproject1.server.BookData
+import com.example.svproject1.server.RetrofitClass
 import kotlinx.android.synthetic.main.activity_payment_page.*
 import kotlinx.android.synthetic.main.activity_sit_page.*
 import kotlinx.android.synthetic.main.activity_sit_page.iv_profile

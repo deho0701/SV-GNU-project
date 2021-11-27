@@ -1,4 +1,4 @@
-package com.example.sv_project1.adater
+package com.example.svproject1.adater
 
 
 import android.content.Context
@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sv_project1.R
-import com.example.sv_project1.SitPageActivity
-import com.example.sv_project1.data.ListData
+import com.example.svproject1.R
+import com.example.svproject1.SitPageActivity
+import com.example.svproject1.data.ListData
 import java.io.Serializable
 
 class CafeRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<CafeRecyclerAdapter.CafeRecyclerViewHolder>() {

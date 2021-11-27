@@ -1,4 +1,4 @@
-package com.example.sv_project1.fargment
+package com.example.svproject1.fargment
 
 import android.content.Context
 import android.os.Bundle
@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sv_project1.adater.HistoryRecyclerAdapter
-import com.example.sv_project1.R
-import com.example.sv_project1.data.ListData
-import com.example.sv_project1.decorator.HorizontalItemDecorator
-import com.example.sv_project1.decorator.VerticalItemDecorator
-import com.example.sv_project1.server.*
+import com.example.svproject1.adater.HistoryRecyclerAdapter
+import com.example.svproject1.R
+import com.example.svproject1.data.ListData
+import com.example.svproject1.decorator.HorizontalItemDecorator
+import com.example.svproject1.decorator.VerticalItemDecorator
+import com.example.svproject1.server.*
 import kotlinx.android.synthetic.main.fragment_history.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,7 +59,7 @@ class HistoryFragment : Fragment() {
                 if (response.isSuccessful) { // <--> response.code == 200
 
                     Log.d("Server table response", response.body().toString())
-                    history_num = response.body()!!.history_num
+                    history_num = response.body()!!.historyNum
                     Log.d("Server history num", history_num.toString())
                     getHistoties(id, history_num)
 
@@ -91,7 +91,7 @@ class HistoryFragment : Fragment() {
 
                         Log.d("Server call", call.request().toString())
 
-                        val name = response.body()!!.cafe_name
+                        val name = response.body()!!.cafeName
                         val date = response.body()!!.date
 
                         Log.d("Server success history", response.body().toString())

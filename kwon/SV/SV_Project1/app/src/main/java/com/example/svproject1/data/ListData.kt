@@ -1,8 +1,6 @@
-package com.example.sv_project1.data
+package com.example.svproject1.data
 
 import java.io.Serializable
-import java.time.Year
-import java.time.YearMonth
 
 class ListData(
     val icon: Int,

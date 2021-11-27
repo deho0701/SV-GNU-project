@@ -1,4 +1,4 @@
-package com.example.sv_project1.server
+package com.example.svproject1.server
 
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit

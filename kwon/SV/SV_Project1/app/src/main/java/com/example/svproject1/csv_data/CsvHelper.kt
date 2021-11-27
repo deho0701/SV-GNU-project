@@ -1,6 +1,6 @@
-package com.example.sv_project1.csv_data
+package com.example.svproject1.csv_data
 
-import com.example.sv_project1.BuildConfig
+import com.example.svproject1.BuildConfig
 import com.opencsv.CSVReader
 import java.io.FileReader
 import java.io.IOException

@@ -1,11 +1,11 @@
-package com.example.sv_project1
+package com.example.svproject1
 
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.sv_project1.fargment.HistoryFragment
-import com.example.sv_project1.fargment.HomeFragment
-import com.example.sv_project1.fargment.MypageFragment
+import com.example.svproject1.fargment.HistoryFragment
+import com.example.svproject1.fargment.HomeFragment
+import com.example.svproject1.fargment.MypageFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 

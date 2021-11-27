@@ -1,27 +1,27 @@
-package com.example.sv_project1.server
+package com.example.svproject1.server
 
 import com.google.gson.annotations.SerializedName
 
 data class TableNumData(
     @SerializedName("store_name")
     val name: String,
-    val table_num: Int,
+    val tableNum: Int,
 )
 
 data class CafeData(
     @SerializedName("store_name")
     val name: String,
     @SerializedName("table_id")
-    val table_id: Int,
-    val table_x: Float,
-    val table_y: Float
+    val tableId: Int,
+    val tableX: Float,
+    val tableY: Float
 )
 
 data class BookData(
     @SerializedName("id")
-    val booker_id: String,
+    val bookerId: String,
     @SerializedName("store_name")
-    val cafe_name: String,
+    val cafeName: String,
     val tables: ArrayList<Int>,
     val time: String
 )
@@ -29,13 +29,13 @@ data class BookData(
 data class HistoryNumData(
     @SerializedName("store_name")
     val id: String,
-    val history_num: Int,
+    val historyNum: Int,
 )
 
 data class HistoryData(
     @SerializedName("id")
     val id: String,
     @SerializedName("store_name")
-    val cafe_name: String,
+    val cafeName: String,
     val date: String
 )

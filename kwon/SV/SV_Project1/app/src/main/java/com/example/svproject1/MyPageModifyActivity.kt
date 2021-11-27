@@ -2,7 +2,7 @@ package com.example.sv_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.sv_project1.R
+import com.example.svproject1.R
 
 class MyPageModifyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

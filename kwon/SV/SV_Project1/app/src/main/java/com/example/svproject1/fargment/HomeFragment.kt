@@ -1,4 +1,4 @@
-package com.example.sv_project1.fargment
+package com.example.svproject1.fargment
 
 import android.content.Context
 import android.os.Bundle
@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sv_project1.adater.CafeRecyclerAdapter
-import com.example.sv_project1.R
-import com.example.sv_project1.data.ListData
-import com.example.sv_project1.decorator.HorizontalItemDecorator
-import com.example.sv_project1.decorator.VerticalItemDecorator
+import com.example.svproject1.adater.CafeRecyclerAdapter
+import com.example.svproject1.R
+import com.example.svproject1.data.ListData
+import com.example.svproject1.decorator.HorizontalItemDecorator
+import com.example.svproject1.decorator.VerticalItemDecorator
 import kotlinx.android.synthetic.main.fragment_home.searchView
 import kotlinx.android.synthetic.main.fragment_home.cafe_recyclerView
 
