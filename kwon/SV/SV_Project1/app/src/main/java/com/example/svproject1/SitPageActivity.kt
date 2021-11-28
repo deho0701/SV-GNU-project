@@ -13,11 +13,12 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
 import com.example.svproject1.data.ListData
 import com.example.svproject1.data.SitData
 import com.example.svproject1.data.SitSelectData
-import com.example.svproject1.server.RetrofitClass
 import com.example.svproject1.server.CafeData
+import com.example.svproject1.server.RetrofitClass
 import com.example.svproject1.server.TableNumData
 import kotlinx.android.synthetic.main.activity_sit_page.*
 import retrofit2.Call
@@ -38,11 +39,18 @@ class SitPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sit_page)
 
-        val data = intent.getSerializableExtra("list data") as ListData
+        val id = intent.getIntExtra("id", -1)
+
+        val data = intent.getSerializableExtra("list data") as ListData // 카페리스트에서 넘어옴 (뒤로가기 시 카페 리스트로)
         val sitView = findViewById<ConstraintLayout>(R.id.sitLayout)
         iv_profile.setImageResource(data.icon)
         tv_profile_name.text = data.name
         val selectSits = ArrayList<Int>()
+
+        // 도면 불러오기
+        val imageUrl =
+            "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png"
+        Glide.with(this).load(imageUrl).into(iv_blueprint)
 
         //time set
         val current : Long = System.currentTimeMillis()
@@ -52,7 +60,7 @@ class SitPageActivity : AppCompatActivity() {
         btn_date.text = dayFormatter.format(current)
         btn_time.text = timeFormatter.format(current)
 
-        val sitData = SitSelectData(data.icon, data.name, selectSits, 0, 0, 0, 0, 0)
+        val sitData = SitSelectData(id, data.icon, data.name, selectSits, 0, 0, 0, 0, 0) // id, 가게 이름, 자리, 시간
 
         btn_date.setOnClickListener {
             val cal = Calendar.getInstance()    //캘린더뷰 만들기
@@ -100,7 +108,7 @@ class SitPageActivity : AppCompatActivity() {
             for (i in 0 until chkList.size) if (chkList[i]) selectSits.add(i+1)
             sitData.sit = selectSits
             Log.d("chk", chkList.toString())
-            showAlert(sitData)
+            intentToPay(sitData)
         }
     }
 
@@ -110,12 +118,14 @@ class SitPageActivity : AppCompatActivity() {
     }
 
 
-    private fun createButton(sitView: ConstraintLayout, // 100자 이상 줄바꿈
-                             buttons: ArrayList<Button>,
-                             x: Float,
-                             y: Float,
-                             size: Int,
-                             check_list: ArrayList<Boolean>){
+    private fun createButton(
+        sitView: ConstraintLayout, // 100자 이상 줄바꿈
+        buttons: ArrayList<Button>,
+        x: Float,
+        y: Float,
+        size: Int,
+        check_list: ArrayList<Boolean>,
+    ){
         buttons.add(Button(this))
         val index = buttons.size - 1
         sitView.addView(buttons[index])
@@ -153,7 +163,7 @@ class SitPageActivity : AppCompatActivity() {
     }
     */
 
-    private fun showAlert(selectData: SitSelectData) {
+    private fun intentToPay(selectData: SitSelectData) { // showAlter 에서 더 직관적인 이름으로 (결제 페이지로 이동)
 
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("선택된 자리로 예약을 진행 하시겠습니까?")
@@ -170,11 +180,13 @@ class SitPageActivity : AppCompatActivity() {
         alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK)
     }
 
-    private fun tableNum(cafeName: String, // 변수는 camelCase
-                         sitView: ConstraintLayout,
-                         btnList: ArrayList<Button>,
-                         btnDataList: ArrayList<SitData>,
-                         chkList: ArrayList<Boolean>) {
+    private fun tableNum(
+        cafeName: String, // 변수는 camelCase
+        sitView: ConstraintLayout,
+        btnList: ArrayList<Button>,
+        btnDataList: ArrayList<SitData>,
+        chkList: ArrayList<Boolean>,
+    ) {
         val callGetNum = RetrofitClass.api.getTableNum(cafeName)
 
         callGetNum.enqueue(object : Callback<TableNumData> {
@@ -197,12 +209,14 @@ class SitPageActivity : AppCompatActivity() {
         })
     }
 
-    private fun getTableToServer(cafeName: String,
-                                 tableNum: Int,
-                                 sitView: ConstraintLayout,
-                                 btnList: ArrayList<Button>,
-                                 btnDataList: ArrayList<SitData>,
-                                 chkList: ArrayList<Boolean>) {
+    private fun getTableToServer(
+        cafeName: String, // 자리 불러오기, 예약 데이터 요청
+        tableNum: Int,
+        sitView: ConstraintLayout,
+        btnList: ArrayList<Button>,
+        btnDataList: ArrayList<SitData>,
+        chkList: ArrayList<Boolean>,
+    ) {
 
         for (table_id in 1..tableNum){
             val callGetStudent = RetrofitClass.api.getUser(cafeName, table_id)
