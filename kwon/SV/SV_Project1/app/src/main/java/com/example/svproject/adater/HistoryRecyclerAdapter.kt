@@ -1,4 +1,4 @@
-package com.example.svproject1.adater
+package com.example.svproject.adater
 
 
 import android.content.Context
@@ -11,8 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.example.svproject1.R
-import com.example.svproject1.data.ListData
+import com.example.svproject.R
+import com.example.svproject.data.ListData
 
 
 class HistoryRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<HistoryRecyclerAdapter.HistoryRecyclerViewHolder>() {

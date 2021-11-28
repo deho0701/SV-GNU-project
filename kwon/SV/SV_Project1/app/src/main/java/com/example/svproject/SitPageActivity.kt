@@ -1,4 +1,4 @@
-package com.example.svproject1 // package 이름에 _ 삭제
+package com.example.svproject // package 이름에 _ 삭제
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -14,12 +14,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
-import com.example.svproject1.data.ListData
-import com.example.svproject1.data.SitData
-import com.example.svproject1.data.SitSelectData
-import com.example.svproject1.server.CafeData
-import com.example.svproject1.server.RetrofitClass
-import com.example.svproject1.server.TableNumData
+import com.example.svproject.data.ListData
+import com.example.svproject.data.SitData
+import com.example.svproject.data.SitSelectData
+import com.example.svproject.server.CafeData
+import com.example.svproject.server.RetrofitClass
+import com.example.svproject.server.TableNumData
 import kotlinx.android.synthetic.main.activity_sit_page.*
 import retrofit2.Call
 import retrofit2.Callback

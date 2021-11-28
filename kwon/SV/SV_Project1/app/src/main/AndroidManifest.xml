@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.svproject1">
+    package="com.example.svproject">
 
     <application
         android:allowBackup="true"
@@ -9,17 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.svproject1.LoginActivity">
+        <activity android:name="com.example.svproject.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.svproject1.SignupActivity"></activity>
-        <activity android:name="com.example.svproject1.MainActivity"></activity>
-        <activity android:name="com.example.svproject1.SitPageActivity"></activity>
-        <activity android:name="com.example.svproject1.PaymentPageActivity"></activity>
+        <activity android:name="com.example.svproject.SignupActivity"></activity>
+        <activity android:name="com.example.svproject.MainActivity"></activity>
+        <activity android:name="com.example.svproject.SitPageActivity"></activity>
+        <activity android:name="com.example.svproject.PaymentPageActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>

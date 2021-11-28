@@ -1,4 +1,4 @@
-package com.example.svproject1
+package com.example.svproject
 
 import android.content.Context
 import android.content.DialogInterface

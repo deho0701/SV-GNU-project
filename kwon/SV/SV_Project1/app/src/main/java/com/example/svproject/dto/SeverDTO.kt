@@ -1,4 +1,4 @@
-package com.example.svproject1.dto
+package com.example.svproject.dto
 
 import retrofit2.Call
 import retrofit2.http.*

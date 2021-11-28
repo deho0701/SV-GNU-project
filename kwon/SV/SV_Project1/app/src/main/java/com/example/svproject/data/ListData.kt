@@ -1,4 +1,4 @@
-package com.example.svproject1.data
+package com.example.svproject.data
 
 import java.io.Serializable
 

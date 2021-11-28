@@ -1,4 +1,4 @@
-package com.example.svproject1.server
+package com.example.svproject.server
 
 import retrofit2.Call
 import retrofit2.http.Body

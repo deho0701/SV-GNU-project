@@ -1,4 +1,4 @@
-package com.example.svproject1.fargment
+package com.example.svproject.fargment
 
 import android.content.Context
 import android.os.Bundle
@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.svproject1.adater.HistoryRecyclerAdapter
-import com.example.svproject1.R
-import com.example.svproject1.data.ListData
-import com.example.svproject1.decorator.HorizontalItemDecorator
-import com.example.svproject1.decorator.VerticalItemDecorator
-import com.example.svproject1.server.*
+import com.example.svproject.adater.HistoryRecyclerAdapter
+import com.example.svproject.R
+import com.example.svproject.data.ListData
+import com.example.svproject.decorator.HorizontalItemDecorator
+import com.example.svproject.decorator.VerticalItemDecorator
+import com.example.svproject.server.*
 import kotlinx.android.synthetic.main.fragment_history.*
 import retrofit2.Call
 import retrofit2.Callback
