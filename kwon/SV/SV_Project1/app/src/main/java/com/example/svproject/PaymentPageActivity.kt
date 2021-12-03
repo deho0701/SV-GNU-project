@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.svproject.data.SitCompleteData
 import com.example.svproject.data.SitSelectData
 import com.example.svproject.server.BookData
 import com.example.svproject.server.RetrofitClass
@@ -38,6 +37,8 @@ class PaymentPageActivity : AppCompatActivity() {
         tv_profile_name.text = data.name
         val dateString = "%d | %d | %d | %d : %d".format(data.year, data.month, data.day, data.hour, data.minute)
         tv_date.text = dateString
+        val dateStr = dateToStr(data)
+        val timeStr = timeToStr(data)
         for(i in data.sit) {
             if(i != data.sit.size-1) peopleStr += "%d, ".format(i)
             else peopleStr += i
@@ -45,24 +46,23 @@ class PaymentPageActivity : AppCompatActivity() {
         tv_selected_sit.text = "%s 번 (총 %d인)".format(peopleStr, data.sit.size*2)
         tv_price.text = "%d 원".format(price)
 
-        val sitCompleteData = SitCompleteData(data.icon, data.name, data.year, data.month, data.day, data.hour, data.minute, peopleStr, price)
-
         payBtn.setOnClickListener {
             var builder = AlertDialog.Builder(this)
             builder.setTitle("결제 확인")
             builder.setMessage("선택하진 예약 정보로 %d원 결제하시겠습니까?".format(price))
 
-            var listener = object : DialogInterface.OnClickListener {
+            var listener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_NEGATIVE ->{
 
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    when (which) {
-                        DialogInterface.BUTTON_NEGATIVE ->{
-
-                        }
-                        DialogInterface.BUTTON_POSITIVE ->{
-                            pay_complete_dialog(id)
-                            postTest(booker_id = id, cafe_name = data.name, tables = data.sit, time = dateString)
-                        }
+                    }
+                    DialogInterface.BUTTON_POSITIVE ->{
+                        PayCompleteDialog(id)
+                        postTest(booker_id = id,
+                            cafe_name = data.name,
+                            tables = data.sit,
+                            date = dateStr,
+                            time = timeStr)
                     }
                 }
             }
@@ -73,7 +73,7 @@ class PaymentPageActivity : AppCompatActivity() {
         }
     }
 
-    private fun pay_complete_dialog(id: String) {
+    private fun PayCompleteDialog(id: String) {
         var builder = AlertDialog.Builder(this)
         builder.setTitle("결제 완료!")
         builder.setMessage("선택하신 정보로 예약이 완료되었습니다.")
@@ -95,8 +95,8 @@ class PaymentPageActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun postTest(booker_id: String, cafe_name: String, tables: ArrayList<Int>, time: String) {
-        val bookData = BookData(booker_id, cafe_name, tables, time)
+    private fun postTest(booker_id: String, cafe_name: String, tables: ArrayList<Int>, date: String, time: String) {
+        val bookData = BookData(booker_id, cafe_name, tables, date, time)
         val callPostBook = RetrofitClass.api.postBookData(bookData)
 
 
@@ -119,8 +119,30 @@ class PaymentPageActivity : AppCompatActivity() {
                 Log.d("Server fail code", "code: 500")
             }
         })
+    }
 
+    private fun dateToStr(sitData: SitSelectData): String {
+        var month: String = (sitData.month + 1).toString()
+        var day: String = sitData.day.toString()
+        if (sitData.month + 1 < 10) {
+            month = '0' + (sitData.month + 1).toString()
+        }
+        if (sitData.day < 10) {
+            day = '0' + sitData.day.toString()
+        }
+        return "${sitData.year}-${month}-${day}"
+    }
 
+    private fun timeToStr(sitData: SitSelectData): String {
+        var hour: String = sitData.hour.toString()
+        var minute: String = sitData.minute.toString()
+        if (sitData.hour < 10) {
+            hour = '0' + sitData.month.toString()
+        }
+        if (sitData.day < 10) {
+            minute = '0'+sitData.minute.toString()
+        }
+        return "${hour}${minute}"
     }
 }
 

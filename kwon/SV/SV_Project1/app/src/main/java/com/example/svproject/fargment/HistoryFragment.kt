@@ -30,6 +30,8 @@ class HistoryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater.from(activity).inflate(R.layout.fragment_history,container,false)
 
+
+
         return view
     }
 
@@ -61,7 +63,7 @@ class HistoryFragment : Fragment() {
                     Log.d("Server table response", response.body().toString())
                     history_num = response.body()!!.historyNum
                     Log.d("Server history num", history_num.toString())
-                    getHistoties(id, history_num)
+                    getHistories(id, history_num)
 
                 } else { // code == 400
                     // 실패 처리
@@ -77,7 +79,7 @@ class HistoryFragment : Fragment() {
         })
     }
 
-    private fun getHistoties(id: String, history_num: Int) {
+    private fun getHistories(id: String, history_num: Int) {
 
         for (history_id in 1..history_num){
             val callGetStudent = RetrofitClass.api.getHistories(id, history_id)
@@ -93,17 +95,16 @@ class HistoryFragment : Fragment() {
 
                         val name = response.body()!!.cafeName
                         val date = response.body()!!.date
+                        val time = response.body()!!.time
 
                         Log.d("Server success history", response.body().toString())
 
                         datas.apply {
-                            add(ListData(icon = R.drawable.coffee_icon, name = name, content = date))
+                            add(ListData(icon = R.drawable.coffee_icon, name = name, content = "$date | $time"))
 
                             historyRecyclerAdapter.datas = datas
                             historyRecyclerAdapter.notifyDataSetChanged()
                         }
-
-
                     } else { // code == 400
                         // 실패 처리
                         Log.d("Server fail", "code: 400")

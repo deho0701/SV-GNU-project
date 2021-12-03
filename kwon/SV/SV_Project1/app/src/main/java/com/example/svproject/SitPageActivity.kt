@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,55 +49,61 @@ class SitPageActivity : AppCompatActivity() {
         val selectSits = ArrayList<Int>()
 
         // 도면 불러오기
-        val imageUrl =
-            "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png"
+        val imageUrl = "http://117.16.164.14:5050/app/photo"
         Glide.with(this).load(imageUrl).into(iv_blueprint)
 
         //time set
         val current : Long = System.currentTimeMillis()
-        val dayFormatter = SimpleDateFormat("yyyy | MM | dd |")
-        val timeFormatter = SimpleDateFormat("HH : mm")
+        val dayFormatter = SimpleDateFormat("yyyy - MM - dd |")
+        val timeFormatter = SimpleDateFormat("HHmm")
 
         btn_date.text = dayFormatter.format(current)
         btn_time.text = timeFormatter.format(current)
 
         val sitData = SitSelectData(id, data.icon, data.name, selectSits, 0, 0, 0, 0, 0) // id, 가게 이름, 자리, 시간
 
-        btn_date.setOnClickListener {
-            val cal = Calendar.getInstance()    //캘린더뷰 만들기
-            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                "$year | ${month+1} | $dayOfMonth |".also { btn_date.text = it }
-                sitData.year = year
-                sitData.month = month
-                sitData.day = dayOfMonth
-            }
-            DatePickerDialog(this,
-                dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)).show() // 100자 이상 줄바꿈
-        }
-
-        btn_time.setOnClickListener {
-            val cal = Calendar.getInstance()
-            val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                "$hourOfDay : $minute".also { btn_time.text = it }
-                sitData.hour = hourOfDay
-                sitData.minute = minute
-            }
-            TimePickerDialog(this, timeSetListener,
-                cal.get(Calendar.HOUR_OF_DAY),
-                cal.get(Calendar.MINUTE),
-                true).show() // 100자 이상 줄바꿈
-        }
+        var dateStr = dateToStr(sitData)
+        var timeStr = timeToStr(sitData)
+        Log.d("Server date", "$dateStr / $timeStr")
 
         //sit button set
         val btnList = ArrayList<Button>() // 변수는 camelCase
         val chkList = ArrayList<Boolean>()
         val btnDataList = ArrayList<SitData>() // 필요없나?
 
+        btn_date.setOnClickListener {
+            val cal = Calendar.getInstance()    //캘린더뷰 만들기
+            val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                sitData.year = year
+                sitData.month = month
+                sitData.day = dayOfMonth
+                dateStr = dateToStr(sitData)
+                timeStr = timeToStr(sitData)
+                btn_date.text = "$dateStr | "
+                Log.d("Server date", "$dateStr / $timeStr")
+                tableNum(data.name, sitView, btnList, btnDataList, chkList, dateStr, timeStr)
+            }
+            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        btn_time.setOnClickListener {
+            val cal = Calendar.getInstance()
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                sitData.hour = hourOfDay
+                sitData.minute = minute
+                dateStr = dateToStr(sitData)
+                timeStr = timeToStr(sitData)
+                btn_time.text = timeStr
+                Log.d("Server date", "$dateStr / $timeStr")
+                tableNum(data.name, sitView, btnList, btnDataList, chkList, dateStr, timeStr)
+            }
+            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),true).show()
+        }
+
+
+
         // server access
-        tableNum(data.name, sitView, btnList, btnDataList, chkList)
+        tableNum(data.name, sitView, btnList, btnDataList, chkList, dateStr, timeStr)
 
         //addDataList(btn_data_list, 100f, 100f, 100)
         //addDataList(btn_data_list, 200f, 100f, 100)
@@ -104,11 +111,22 @@ class SitPageActivity : AppCompatActivity() {
         //createButtons(sitView, btn_list, btn_data_list, chk_list)
 
         completeBtn.setOnClickListener {
-            selectSits.clear() // 자리 중복
-            for (i in 0 until chkList.size) if (chkList[i]) selectSits.add(i+1)
-            sitData.sit = selectSits
-            Log.d("chk", chkList.toString())
-            intentToPay(sitData)
+            if (sitData.year == 0 || sitData.hour == 0) {
+                Toast.makeText(this,"시간을 선택해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            else {
+                selectSits.clear() // 자리 중복
+                for (i in 0 until chkList.size) if (chkList[i]) selectSits.add(i+1)
+                if (selectSits.isEmpty()) {
+                    Toast.makeText(this,"자리를 선택해 주세요", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    sitData.sit = selectSits
+                    Log.d("chk", chkList.toString())
+                    intentToPay(sitData)
+                }
+            }
         }
     }
 
@@ -125,6 +143,7 @@ class SitPageActivity : AppCompatActivity() {
         y: Float,
         size: Int,
         check_list: ArrayList<Boolean>,
+        booked:Boolean
     ){
         buttons.add(Button(this))
         val index = buttons.size - 1
@@ -136,19 +155,25 @@ class SitPageActivity : AppCompatActivity() {
         buttons[index].layoutParams = ConstraintLayout.LayoutParams(size, size)
         buttons[index].text = index.toString()
         check_list.add(false)
-        buttons[index].setBackgroundColor(Color.parseColor("#e1eef6"))
-        buttons[index].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
-            when (event?.action) {
-                MotionEvent.ACTION_UP -> if (!check_list[index]) {
-                    buttons[index].setBackgroundColor(Color.parseColor("#004e66"))
-                    check_list[index] = true
-                } else if (check_list[index]) {
-                    buttons[index].setBackgroundColor(Color.parseColor("#e1eef6"))
-                    check_list[index] = false
+        if (booked) {
+            buttons[index].setBackgroundColor(Color.parseColor("#e1eef6"))
+            buttons[index].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
+                when (event?.action) {
+                    MotionEvent.ACTION_UP -> if (!check_list[index]) {
+                        buttons[index].setBackgroundColor(Color.parseColor("#004e66"))
+                        check_list[index] = true
+                    } else if (check_list[index]) {
+                        buttons[index].setBackgroundColor(Color.parseColor("#e1eef6"))
+                        check_list[index] = false
+                    }
                 }
+                false
             }
-            false
         }
+        else {
+            buttons[index].setBackgroundColor(Color.parseColor("#787878"))
+        }
+
     }
 
     /**
@@ -186,16 +211,19 @@ class SitPageActivity : AppCompatActivity() {
         btnList: ArrayList<Button>,
         btnDataList: ArrayList<SitData>,
         chkList: ArrayList<Boolean>,
+        date: String,
+        time: String,
     ) {
         val callGetNum = RetrofitClass.api.getTableNum(cafeName)
 
         callGetNum.enqueue(object : Callback<TableNumData> {
             override fun onResponse(call: Call<TableNumData>, response: Response<TableNumData>) {
                 if (response.isSuccessful) { // <--> response.code == 200
+                    Log.d("Server Call", call.request().toString())
                     Log.d("Server table response", response.body().toString())
                     tableNum = response.body()!!.tableNum
                     Log.d("Server table num", tableNum.toString())
-                    getTableToServer(cafeName, tableNum, sitView, btnList, btnDataList, chkList) /** if 뒤에 줄바꿈 하지 않음*/
+                    getTableToServer(cafeName, tableNum, sitView, btnList, btnDataList, chkList, date, time) /** if 뒤에 줄바꿈 하지 않음*/
                 } else { // 실패 처리
                     Log.d("Server fail", "code: 400, table num")
                 }
@@ -216,10 +244,12 @@ class SitPageActivity : AppCompatActivity() {
         btnList: ArrayList<Button>,
         btnDataList: ArrayList<SitData>,
         chkList: ArrayList<Boolean>,
+        date: String,
+        time: String
     ) {
 
         for (table_id in 1..tableNum){
-            val callGetStudent = RetrofitClass.api.getUser(cafeName, table_id)
+            val callGetStudent = RetrofitClass.api.getUser(cafeName, table_id, date, time)
 
             callGetStudent.enqueue(object : Callback<CafeData> {
                 override fun onResponse(call: Call<CafeData>,response: Response<CafeData>) {
@@ -230,6 +260,7 @@ class SitPageActivity : AppCompatActivity() {
                         val id = response.body()!!.tableId // 변수는 camelCase
                         val x = response.body()!!.tableX
                         val y = response.body()!!.tableY
+                        val booked = response.body()!!.booked
 
                         dataMap[id] = listOf(x, y)
                         Log.d("Server success", response.body().toString())
@@ -237,7 +268,7 @@ class SitPageActivity : AppCompatActivity() {
                         Log.d("Mapped table", "$id: "+dataMap[id])
 
                         addDataList(btnDataList, x, y, SIZE)
-                        createButton(sitView, btnList, x, y, SIZE, chkList)
+                        createButton(sitView, btnList, x, y, SIZE, chkList, booked)
                     } else { // 실패 처리
                         Log.d("Server fail", "code: 400")
                     }
@@ -249,6 +280,31 @@ class SitPageActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+
+    private fun dateToStr(sitData: SitSelectData): String {
+        var month: String = (sitData.month + 1).toString()
+        var day: String = sitData.day.toString()
+        if (sitData.month + 1 < 10) {
+            month = '0' + (sitData.month + 1).toString()
+        }
+        if (sitData.day < 10) {
+            day = '0' + sitData.day.toString()
+        }
+        return "${sitData.year}-${month}-${day}"
+    }
+
+    private fun timeToStr(sitData: SitSelectData): String {
+        var hour: String = sitData.hour.toString()
+        var minute: String = sitData.minute.toString()
+        if (sitData.hour < 10) {
+            hour = '0' + sitData.hour.toString()
+        }
+        if (sitData.minute < 10) {
+            minute = '0'+sitData.minute.toString()
+        }
+        return "${hour}${minute}"
     }
 
     companion object { // 상수로 선언 (대문자)
