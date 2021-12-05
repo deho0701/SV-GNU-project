@@ -1,3 +1,4 @@
+// 모듈 import
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
@@ -7,7 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));    // post 방식 세팅
 app.use(bodyParser.json());   
 const multer = require("multer");
 
-// DB 연결
+// DB 연결 정보
 const { CONNREFUSED } = require('dns');
 var pool = mysql.createPool({
   host     : 'localhost',
@@ -16,37 +17,7 @@ var pool = mysql.createPool({
   database : 'sv_app_db'
 })
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//이미지 설정
-const storage = multer.diskStorage({
-  destination: "./img",
-  filename: function(req, file, cb) {
-    console.log("img ok");
-    cb(null, file.originalname);
-  }
-});
-
-var upload = multer({storage: storage});
-
-app.post("/photo_up",upload.single("img"),(req, res)=>{
-  //console.log(req.file);
-});
-
-
-var fs = require('fs');
-app.all("/photo_down",(req, res)=>{
-  var img = 'img/2021_4_PC01.png';
-  
-  fs.readFile(img, function(err, data) {
-    res.writeHead(200, {"Content-Type": "image/png"});
-    res.write(data);
-    res.end();
-  });
-});
-////////////////////////////////////////////////////////////////////////////////////////
-
-/*예약 현황*/
+/* 예약현황 페이지*/
 const reserveFile = require ('../web_test.json');
 app.post("/reserve",(req, res)=>
   {   
@@ -64,8 +35,36 @@ app.post("/reserve",(req, res)=>
     });
   }
 );
-///////////////////////////////////////////////////////////////////////////////////////
+
 /* 자리 배치 페이지 */
+//이미지 저장 옵션 (경로,이름)
+const storage = multer.diskStorage({
+  destination: "./img",
+  filename: function(req, file, cb) {
+    console.log("img ok");
+    cb(null, file.originalname);
+  }
+});
+
+//이미지 업로드
+var upload = multer({storage: storage});
+app.post("/photo_up",upload.single("img"),(req, res)=>{
+  //console.log(req.file);
+});
+
+//이미지 다운로드
+var fs = require('fs');
+app.all("/photo_down",(req, res)=>{
+  var img = 'img/2021_4_PC01.png';
+  
+  fs.readFile(img, function(err, data) {
+    res.writeHead(200, {"Content-Type": "image/png"});
+    res.write(data);
+    res.end();
+  });
+});
+
+//기존의 자리 배치 정보 가져오는 API
 app.post("/pre_seat",(req, res)=>
   {   
     var username = req.body.name; 
@@ -83,6 +82,7 @@ app.post("/pre_seat",(req, res)=>
   }
 );
 
+//변경된 자리 저장
 app.all("/seat",(req, res)=>
   { 
     console.log(req.body);
@@ -116,12 +116,12 @@ app.all("/seat",(req, res)=>
   }
 );
 
-////////////////////////////////////////////////////////////////////////////////////////////
 /* 일반설정 페이지 */
+//기존의 설정 가져옴
 app.all("/pre_setting",(req, res)=>
   { 
     console.log(req.body);
-    var store_name = req.body.name;
+    var store_name = "cafe 502";//req.body.name;
     var sql = "SELECT store_ID,store_name,address,store_call FROM store WHERE store_name ='"+store_name+"'";
     pool.query(sql ,(err, result)=>{
       if (err) { 
@@ -133,10 +133,11 @@ app.all("/pre_setting",(req, res)=>
       }
     });  
     console.log("setting clear");
-    res.send("setting API claer");
+    //res.send("setting API claer");
   }
 );
 
+//변경된 설정 저장
 app.all("/setting",(req, res)=>
   {   
     console.log("setting clear");
@@ -144,9 +145,4 @@ app.all("/setting",(req, res)=>
   }
 );
 
-
-
-
-
-  
 module.exports = app;

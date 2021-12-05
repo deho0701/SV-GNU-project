@@ -1,3 +1,4 @@
+// 모듈 import
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
@@ -5,7 +6,8 @@ const app = express();
 var bodyParser = require( 'body-parser' );
 app.use(bodyParser.urlencoded({ extended: true }));    // post 방식 세팅
 app.use(bodyParser.json());   
-// DB 연결
+
+// DB 연결 정보
 const { CONNREFUSED } = require('dns');
 var pool = mysql.createPool({
   host     : 'localhost',
@@ -14,24 +16,23 @@ var pool = mysql.createPool({
   database : 'sv_app_db'
 })
 
-
+/* 테이블 예약 페이지*/
 //총 테이블 개수 구하는 API
 app.get("/table_num",(req, res)=>{
-    console.log(req.query);
-    var store_name = 'phonecafe';//req.query.name;
-    var sql = "SELECT COUNT (table_id) as table_num FROM table_info WHERE store_name='"+store_name+"'";
-    pool.query(sql ,(err, result)=>{
-      if (err) { 
-        console.log("error in table_num");
-      }else{
-      console.log(result[0]);}
-      res.json(result[0]);  
-    });
+  console.log(req.query);
+  var store_name = 'phonecafe';//req.query.name;
+  var sql = "SELECT COUNT (table_id) as table_num FROM table_info WHERE store_name='"+store_name+"'";
+  pool.query(sql ,(err, result)=>{
+    if (err) { 
+      console.log("error in table_num");
+    }else{
+    console.log(result[0]);}
+    res.json(result[0]);  
   });
+});
 
 //기존 테이블 정보 요청 API
 app.all("/sit",(req, res)=>{
-    console.log("sit ok");
     console.log(req.query);
     var date = req.query.date;
     var time = req.query.time;
@@ -71,7 +72,7 @@ app.all("/sit",(req, res)=>{
 });
 
 
-//결제 페이지
+/* 결제 페이지 */
 app.all("/pay",(req, res)=>{ //결제시 예약, 히스토리에 추가 
     console.log(req.body);
     var client_name = req.body.id; 
@@ -88,6 +89,8 @@ app.all("/pay",(req, res)=>{ //결제시 예약, 히스토리에 추가
           console.log("error in pay1");
           console.log(err);
           res.json({pay:404});
+        }else{
+          console.log("pay1");
         }
       });
       sql="INSERT INTO history(store_name ,date,time,user_id) VALUES ('"+store_name+"','"+date+"','"+time+"','"+client_name+"')";
@@ -96,6 +99,8 @@ app.all("/pay",(req, res)=>{ //결제시 예약, 히스토리에 추가
           console.log("error in pay2");
           console.log(err);
           res.json({pay:404});
+        }else{
+          console.log("pay2");
         }
       });
       i=i+1;
@@ -103,6 +108,8 @@ app.all("/pay",(req, res)=>{ //결제시 예약, 히스토리에 추가
     res.json({pay:200}); 
 });
 
+
+/*히스토리 페이지*/
 //히스토리 삭제 >> 히스토리 & 예약정보에서 삭제함
 app.post("/history_del",(req, res)=>{  //예약 취소  - 데이터 받아오기 
   console.log(req.body);
@@ -135,6 +142,7 @@ app.post("/history_del",(req, res)=>{  //예약 취소  - 데이터 받아오기
   });
 });
 
+//히스토리 개수 요청 API
 app.get("/history_num",(req, res)=>{ //히스토리 개수 
   var username = "hoho";
   var sql = "SELECT count(*) as history_num FROM history WHERE user_id='"+username+"'";
@@ -148,7 +156,8 @@ app.get("/history_num",(req, res)=>{ //히스토리 개수
   });
 });
 
-app.get("/history",(req, res)=>{  //히스토리 정보 가져옴
+//요청한 유저의 히스토리 정보 전송API
+app.get("/history",(req, res)=>{
   console.log(req.query);
   var user_id = req.query.id;
   var history_id = req.query.history_id;
@@ -163,19 +172,7 @@ app.get("/history",(req, res)=>{  //히스토리 정보 가져옴
   });
 });
 
-app.all("/test",(req, res)=>{
-  req.query
-  var sql = "INSERT INTO reservation (store_name) VALUES (GNU)";
-  pool.query(sql ,(err, result)=>{
-    if (err) { 
-      console.log("error in test");
-    }
-  })
-  
-  console.log("oo");
-  res.send("test ok");
-});
-
+//도면 이미지 전송
 var fs = require('fs');
 app.all("/photo",(req, res)=>{
   var img = 'img/2021_4_PC01.png';
@@ -186,7 +183,5 @@ app.all("/photo",(req, res)=>{
     res.end();
   });
 });
-
-
 
 module.exports = app;
