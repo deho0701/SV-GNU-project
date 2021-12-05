@@ -13,15 +13,3 @@ class SitSelectData(
     var hour: Int,
     var minute: Int,
 ): Serializable
-
-class SitCompleteData(
-    val icon: Int,
-    val name: String,
-    var year: Int,
-    var month: Int,
-    var day: Int,
-    var hour: Int,
-    var minute: Int,
-    val str: String,
-    val price: Int
-): Serializable

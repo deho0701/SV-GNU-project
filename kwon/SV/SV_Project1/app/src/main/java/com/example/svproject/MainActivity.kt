@@ -23,22 +23,27 @@ class MainActivity : AppCompatActivity() {
 
         var id = intent.getStringExtra("id")
 
-        initNaviBar()
+        initNaviBar(id)
     }
 
-    private fun initNaviBar() {
+    private fun initNaviBar(id: String) {
+        val bundle = Bundle()
+        bundle.putString("id", id)
         bottomNavigationView.run {
             setOnNavigationItemSelectedListener {
                 when(it.itemId){
                     R.id.home ->{
+                        homeFragment.arguments = bundle
                         supportFragmentManager.beginTransaction().
                         replace(R.id.main_frame, homeFragment).commit()
                     }
                     R.id.history -> {
+                        historyFragment.arguments = bundle
                         supportFragmentManager.beginTransaction().
                         replace(R.id.main_frame, historyFragment).commit()
                     }
                     R.id.myPage -> {
+                        mypageFragment.arguments = bundle
                         supportFragmentManager.beginTransaction().
                         replace(R.id.main_frame, mypageFragment).commit()
                     }

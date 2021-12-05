@@ -14,18 +14,10 @@ import com.example.svproject.SitPageActivity
 import com.example.svproject.data.ListData
 import java.io.Serializable
 
-class CafeRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<CafeRecyclerAdapter.CafeRecyclerViewHolder>() {
+class HomeRecyclerAdapter(private val context: Context)
+    : RecyclerView.Adapter<HomeRecyclerAdapter.CafeRecyclerViewHolder>() {
 
     var datas = mutableListOf<ListData>()
-
-    interface OnItemClickListener{
-        fun onItemClick(v:View, data: ListData, pos : Int)
-    }
-
-    private var listener : OnItemClickListener? = null
-    fun setOnItemClickListener(listener : OnItemClickListener) {
-        this.listener = listener
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeRecyclerViewHolder { // 생성
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cafe_list, parent, false)

@@ -170,8 +170,10 @@ class SitPageActivity : AppCompatActivity() {
             buttons[id-1].setBackgroundColor(Color.parseColor("#787878"))
             buttons[id-1].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
                 when (event?.action) {
+                    MotionEvent.ACTION_UP -> Toast.makeText(this, "이미 예약된 자리입니다.", Toast.LENGTH_SHORT).show()
                 }
                 false
+
             }
         }
 

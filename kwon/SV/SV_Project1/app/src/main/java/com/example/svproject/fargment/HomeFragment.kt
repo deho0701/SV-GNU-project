@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.svproject.adater.CafeRecyclerAdapter
+import com.example.svproject.adater.HomeRecyclerAdapter
 import com.example.svproject.R
 import com.example.svproject.data.ListData
 import com.example.svproject.decorator.HorizontalItemDecorator
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_home.cafe_recyclerView
 
 
 class HomeFragment: Fragment() {
-    lateinit var cafeRecyclerAdapter: CafeRecyclerAdapter
+    lateinit var homeRecyclerAdapter: HomeRecyclerAdapter
 
     lateinit var cafeList: ArrayList<String>
     lateinit var cafeMap: MutableMap<String, List<String>>
@@ -34,13 +34,13 @@ class HomeFragment: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val id = requireArguments().getString("id")
 
         cafe_recyclerView.layoutManager = LinearLayoutManager(activity)
 
         //cafe list 불러오기
         val assetManager = resources.assets
         val inputStream = assetManager.open("cafe_list.txt")
-        //var cafeMap = mutableMapOf("id" to listOf<String>("cafe_name", "location"))
 
         inputStream.bufferedReader().readLines().forEach {
             var tmp = it.split(',')
@@ -67,7 +67,7 @@ class HomeFragment: Fragment() {
         }
 
         //리사이클러 뷰 생성
-        initRecycler(requireContext(), cafeMap)
+        id?.let { initRecycler(requireContext(), cafeMap, it) }
 
         cafe_recyclerView.addItemDecoration(VerticalItemDecorator(20))
         cafe_recyclerView.addItemDecoration(HorizontalItemDecorator(10))
@@ -98,11 +98,10 @@ class HomeFragment: Fragment() {
                             }
                         }
                     }
-                    //for (i in queryCafeMap) Log.d("query_cafe", i.value[0])
-                    initRecycler(requireContext(), queryCafeMap)
+                    id?.let { initRecycler(requireContext(), queryCafeMap, it) }
                 }
                 else { // 검색창 글을 다 지웠을 때
-                    initRecycler(requireContext(), cafeMap)
+                    id?.let { initRecycler(requireContext(), cafeMap, it) }
                 }
                 return true
             }
@@ -110,10 +109,10 @@ class HomeFragment: Fragment() {
 
     }
 
-    private fun initRecycler(context: Context, cafeMap: MutableMap<String, List<String>>) {
+    private fun initRecycler(context: Context, cafeMap: MutableMap<String, List<String>>, id: String) {
         var datas = mutableListOf<ListData>()
-        cafeRecyclerAdapter = CafeRecyclerAdapter(context)
-        cafe_recyclerView.adapter = cafeRecyclerAdapter
+        homeRecyclerAdapter = HomeRecyclerAdapter(context)
+        cafe_recyclerView.adapter = homeRecyclerAdapter
 
         datas.apply {
             for (cafe in cafeMap) {
@@ -121,23 +120,24 @@ class HomeFragment: Fragment() {
                 //Log.d("cafe_icon", icon.toString())
                 if (cafe.value[0] != "name" || cafe.value[0] != "query_name" ) {
                     if (icon != 0) {
-                        add(ListData(icon = icon,
+                        add(ListData(userId = id,
+                            icon = icon,
                             name = cafe.value[0],
                             content = cafe.value[1]))
                     }
                     // no icon image
                     else {
-                        add(ListData(icon = R.drawable.default_cafe_icon,
+                        add(ListData(userId = id,
+                            icon = R.drawable.default_cafe_icon,
                             name = cafe.value[0],
                             content = cafe.value[1]))
                     }
                 }
             }
 
-            cafeRecyclerAdapter.datas = datas
-            cafeRecyclerAdapter.notifyDataSetChanged()
+            homeRecyclerAdapter.datas = datas
+            homeRecyclerAdapter.notifyDataSetChanged()
         }
-
     }
 }
 

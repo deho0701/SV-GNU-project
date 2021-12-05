@@ -19,11 +19,12 @@ import com.example.svproject.server.RetrofitClass
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.app.Activity
+import androidx.fragment.app.Fragment
 
 
-class HistoryRecyclerAdapter(private val context: Context) : RecyclerView.Adapter<HistoryRecyclerAdapter.HistoryRecyclerViewHolder>() {
-
-
+class HistoryRecyclerAdapter(private val context: Context, private val id: String)
+    : RecyclerView.Adapter<HistoryRecyclerAdapter.HistoryRecyclerViewHolder>() {
     var datas = mutableListOf<ListData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryRecyclerViewHolder { // 생성
@@ -61,7 +62,7 @@ class HistoryRecyclerAdapter(private val context: Context) : RecyclerView.Adapte
                             }
                             DialogInterface.BUTTON_POSITIVE ->{
                                 val contents = item.content.split(" | ")
-                                removeHistory("hoho", item.name, contents[0], contents[1].toInt())
+                                removeHistory(id, item.name, contents[0], contents[1].toInt())
                                 Toast.makeText(context, "예약이 취소되었습니다.", Toast.LENGTH_LONG).show()
                             }
                         }
@@ -82,7 +83,7 @@ class HistoryRecyclerAdapter(private val context: Context) : RecyclerView.Adapte
         removeHistory.enqueue(object : Callback<HistoryData> {
             override fun onResponse(
                 call: Call<HistoryData>,
-                response: Response<HistoryData>
+                response: Response<HistoryData>,
             ) {
                 if (response.isSuccessful) { // <--> response.code == 200
                     Log.d("Server call", call.request().toString())

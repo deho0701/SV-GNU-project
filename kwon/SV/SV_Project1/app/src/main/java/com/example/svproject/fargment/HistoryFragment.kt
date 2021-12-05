@@ -31,25 +31,24 @@ class HistoryFragment : Fragment() {
         val view = LayoutInflater.from(activity).inflate(R.layout.fragment_history,container,false)
 
 
-
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val id = arguments?.getString("id")
+
         history_recyclerView.layoutManager = LinearLayoutManager(activity)
-        initRecycler(requireContext())
-        val id = "hoho"
-        historyNum(id)
+        id?.let { initRecycler(requireContext(), it) }
+        id?.let { historyNum(it) }
 
         history_recyclerView.addItemDecoration(VerticalItemDecorator(20))
         history_recyclerView.addItemDecoration(HorizontalItemDecorator(10))
-
     }
 
-    private fun initRecycler(context: Context) {
-        historyRecyclerAdapter = HistoryRecyclerAdapter(context)
+    private fun initRecycler(context: Context, id: String) {
+        historyRecyclerAdapter = HistoryRecyclerAdapter(context, id)
         history_recyclerView.adapter = historyRecyclerAdapter
     }
 
