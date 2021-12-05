@@ -33,6 +33,11 @@ interface ServerInterface {
         @Query("history_id") historyId: Int
     ): Call<HistoryData>
 
+    @POST("login")
+    fun postLogin(
+        @Body loginData: LoginData
+    ): Call<LoginData>
+
     @POST("history_del")
     fun removeHistories(
         @Body historyData: HistoryData

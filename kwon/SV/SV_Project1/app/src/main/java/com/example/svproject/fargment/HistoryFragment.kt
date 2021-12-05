@@ -21,7 +21,7 @@ import retrofit2.Response
 
 
 class HistoryFragment : Fragment() {
-    var history_num = -1
+    var historyNum = -1
 
     lateinit var historyRecyclerAdapter: HistoryRecyclerAdapter
     val datas = mutableListOf<ListData>()
@@ -61,9 +61,9 @@ class HistoryFragment : Fragment() {
                 if (response.isSuccessful) { // <--> response.code == 200
 
                     Log.d("Server table response", response.body().toString())
-                    history_num = response.body()!!.historyNum
-                    Log.d("Server history num", history_num.toString())
-                    getHistories(id, history_num)
+                    historyNum = response.body()!!.historyNum
+                    Log.d("Server history num", historyNum.toString())
+                    getHistories(id, historyNum)
 
                 } else { // code == 400
                     // 실패 처리
@@ -80,6 +80,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun getHistories(id: String, history_num: Int) {
+        datas.clear()
 
         for (history_id in 1..history_num){
             val callGetStudent = RetrofitClass.api.getHistories(id, history_id)

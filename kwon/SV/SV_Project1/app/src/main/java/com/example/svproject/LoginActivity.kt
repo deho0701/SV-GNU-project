@@ -4,50 +4,30 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.svproject.server.BookData
+import com.example.svproject.server.LoginData
+import com.example.svproject.server.RetrofitClass
 import kotlinx.android.synthetic.main.activity_login.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.Serializable
 
 class LoginActivity : AppCompatActivity() {
-    val TAG: String = "LoginActivity"
-    var id : Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // 서버 세팅
-       /* val url = "117.16.164.14"
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(url)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        var server = retrofit.create(APIInterface::class.java)*/
-
-        // 로그인 버튼
-
         btn_login.setOnClickListener {
-
-            //test
-            Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show()
-
-            var intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
-                putExtra("id", id)
-            }
-            startActivity(intent)
-
-            /*server.getRequest("ID").enqueue(object: Callback<ResponseDC> {
-                override fun onResponse(call: Call<ResponseDC>, response: Response<ResponseDC>) {
-                    val ID = response?.body().toString()
-                    Log.d("response : ", ID)
-                }
-
-                override fun onFailure(call: Call<ResponseDC>, t: Throwable) {
-                    Toast.makeText(this@LoginActivity, "없는 아이디 입니다.", Toast.LENGTH_SHORT).show()
-                }
-            })*/
+            var id = et_id.text.toString()
+            var pw = et_pw.text.toString()
+            Log.d("id/pw", id+pw)
+            postLogin(id, pw)
         }
 
         // 회원가입
@@ -57,35 +37,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 로그인 성공/실패 시 다이얼로그를 띄워주는 메소드
-    fun dialog(type: String){
-        var dialog = AlertDialog.Builder(this)
+    private fun postLogin(id: String, pw: String) {
+        val loginData = LoginData(id, pw)
+        val callPostBook = RetrofitClass.api.postLogin(loginData)
 
-        if(type.equals("success")){
-            dialog.setTitle("로그인 성공")
-            dialog.setMessage("로그인 성공!")
-        }
-        else if(type.equals("fail")){
-            dialog.setTitle("로그인 실패")
-            dialog.setMessage("아이디와 비밀번호를 확인해주세요")
-        }
-
-        var dialog_listener = object: DialogInterface.OnClickListener{
-            override fun onClick(dialog: DialogInterface?, which: Int) {
-                when(which){
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        Log.d(TAG, "")
-                        var intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
-                            putExtra("id", id)
-                        }
-                        startActivity(intent)
-                    }
-
+        callPostBook.enqueue(object : Callback<LoginData> {
+            override fun onResponse(call: Call<LoginData>, response: Response<LoginData>) {
+                if (response.isSuccessful) {
+                    Log.d("Login req", call.request().toString())
+                    var data = response.body()
+                    Log.d("Login post", data.toString())
+                    Log.d("Login post", response.headers().toString())
+                    Toast.makeText(this@LoginActivity, "${data!!.id} 회원님, 반갑습니다!", Toast.LENGTH_LONG).show()
+                    Intent(this@LoginActivity, MainActivity::class.java).apply {
+                        putExtra("id", id)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }.run { startActivity(this) }
+                }
+                else {
+                    Log.d("Login fail", "code: 400, login")
+                    Toast.makeText(this@LoginActivity, "아이디와 비밀번호를 다시 확인해 주세요.", Toast.LENGTH_LONG).show()
                 }
             }
-        }
 
-        dialog.setPositiveButton("확인",dialog_listener)
-        dialog.show()
+            override fun onFailure(call: Call<LoginData>, t: Throwable) {
+                Log.d("Login fail", t.toString())
+                Log.d("Login fail code", "code: 500")
+            }
+        })
     }
 }

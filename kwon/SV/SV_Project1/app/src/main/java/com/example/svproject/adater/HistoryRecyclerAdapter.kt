@@ -85,9 +85,10 @@ class HistoryRecyclerAdapter(private val context: Context) : RecyclerView.Adapte
                 response: Response<HistoryData>
             ) {
                 if (response.isSuccessful) { // <--> response.code == 200
-
                     Log.d("Server call", call.request().toString())
                     Log.d("Server history del", response.body().toString())
+
+
                 } else { // code == 400
                     // 실패 처리
                     Log.d("Server fail", "code: 400")

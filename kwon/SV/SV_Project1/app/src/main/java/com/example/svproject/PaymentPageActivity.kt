@@ -35,10 +35,10 @@ class PaymentPageActivity : AppCompatActivity() {
 
         iv_profile.setImageResource(data.icon)
         tv_profile_name.text = data.name
-        val dateString = "%d | %d | %d | %d : %d".format(data.year, data.month, data.day, data.hour, data.minute)
-        tv_date.text = dateString
+
         val dateStr = dateToStr(data)
         val timeStr = timeToStr(data)
+        tv_date.text = dateStr + timeStr
         for(i in data.sit) {
             if(i != data.sit.size-1) peopleStr += "%d, ".format(i)
             else peopleStr += i
@@ -57,8 +57,8 @@ class PaymentPageActivity : AppCompatActivity() {
 
                     }
                     DialogInterface.BUTTON_POSITIVE ->{
-                        PayCompleteDialog(id)
-                        postTest(booker_id = id,
+                        payCompleteDialog(id)
+                        postPay(booker_id = id,
                             cafe_name = data.name,
                             tables = data.sit,
                             date = dateStr,
@@ -73,7 +73,7 @@ class PaymentPageActivity : AppCompatActivity() {
         }
     }
 
-    private fun PayCompleteDialog(id: String) {
+    private fun payCompleteDialog(id: String) {
         var builder = AlertDialog.Builder(this)
         builder.setTitle("결제 완료!")
         builder.setMessage("선택하신 정보로 예약이 완료되었습니다.")
@@ -95,7 +95,7 @@ class PaymentPageActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun postTest(booker_id: String, cafe_name: String, tables: ArrayList<Int>, date: String, time: String) {
+    private fun postPay(booker_id: String, cafe_name: String, tables: ArrayList<Int>, date: String, time: String) {
         val bookData = BookData(booker_id, cafe_name, tables, date, time)
         val callPostBook = RetrofitClass.api.postBookData(bookData)
 

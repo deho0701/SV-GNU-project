@@ -2,6 +2,11 @@ package com.example.svproject.server
 
 import com.google.gson.annotations.SerializedName
 
+data class LoginData(
+    val id: String,
+    val pw: String
+)
+
 data class TableNumData(
     @SerializedName("store_name")
     val name: String,

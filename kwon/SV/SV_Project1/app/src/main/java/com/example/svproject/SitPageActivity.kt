@@ -111,12 +111,12 @@ class SitPageActivity : AppCompatActivity() {
         //createButtons(sitView, btn_list, btn_data_list, chk_list)
 
         completeBtn.setOnClickListener {
+            selectSits.clear()
             if (sitData.year == 0 || sitData.hour == 0) {
                 Toast.makeText(this,"시간을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             else {
-                selectSits.clear() // 자리 중복
                 for (i in 0 until chkList.size) if (chkList[i]) selectSits.add(i+1)
                 if (selectSits.isEmpty()) {
                     Toast.makeText(this,"자리를 선택해 주세요", Toast.LENGTH_SHORT).show()
@@ -139,6 +139,7 @@ class SitPageActivity : AppCompatActivity() {
     private fun createButton(
         sitView: ConstraintLayout, // 100자 이상 줄바꿈
         buttons: ArrayList<Button>,
+        id: Int,
         x: Float,
         y: Float,
         size: Int,
@@ -146,32 +147,32 @@ class SitPageActivity : AppCompatActivity() {
         booked:Boolean
     ){
         buttons.add(Button(this))
-        val index = buttons.size - 1
-        sitView.addView(buttons[index])
-        buttons[index].width = size
-        buttons[index].height = size
-        buttons[index].x = x
-        buttons[index].y = y
-        buttons[index].layoutParams = ConstraintLayout.LayoutParams(size, size)
-        buttons[index].text = index.toString()
+        sitView.removeView(buttons[id-1])
+        sitView.addView(buttons[id-1])
+        buttons[id-1].width = size
+        buttons[id-1].height = size
+        buttons[id-1].x = x
+        buttons[id-1].y = y
+        buttons[id-1].layoutParams = ConstraintLayout.LayoutParams(size, size)
+        buttons[id-1].text = id.toString()
         check_list.add(false)
         if (booked) {
-            buttons[index].setBackgroundColor(Color.parseColor("#e1eef6"))
-            buttons[index].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
+            buttons[id-1].setBackgroundColor(Color.parseColor("#e1eef6"))
+            buttons[id-1].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
                 when (event?.action) {
-                    MotionEvent.ACTION_UP -> if (!check_list[index]) {
-                        buttons[index].setBackgroundColor(Color.parseColor("#004e66"))
-                        check_list[index] = true
-                    } else if (check_list[index]) {
-                        buttons[index].setBackgroundColor(Color.parseColor("#e1eef6"))
-                        check_list[index] = false
+                    MotionEvent.ACTION_UP -> if (!check_list[id-1]) {
+                        buttons[id-1].setBackgroundColor(Color.parseColor("#004e66"))
+                        check_list[id-1] = true
+                    } else if (check_list[id-1]) {
+                        buttons[id-1].setBackgroundColor(Color.parseColor("#e1eef6"))
+                        check_list[id-1] = false
                     }
                 }
                 false
             }
         }
         else {
-            buttons[index].setBackgroundColor(Color.parseColor("#787878"))
+            buttons[id-1].setBackgroundColor(Color.parseColor("#787878"))
         }
 
     }
@@ -209,11 +210,12 @@ class SitPageActivity : AppCompatActivity() {
         cafeName: String, // 변수는 camelCase
         sitView: ConstraintLayout,
         btnList: ArrayList<Button>,
-        btnDataList: ArrayList<SitData>,
+        sitDataList: ArrayList<SitData>,
         chkList: ArrayList<Boolean>,
         date: String,
         time: String,
     ) {
+        sitDataList.clear()
         val callGetNum = RetrofitClass.api.getTableNum(cafeName)
 
         callGetNum.enqueue(object : Callback<TableNumData> {
@@ -223,7 +225,7 @@ class SitPageActivity : AppCompatActivity() {
                     Log.d("Server table response", response.body().toString())
                     tableNum = response.body()!!.tableNum
                     Log.d("Server table num", tableNum.toString())
-                    getTableToServer(cafeName, tableNum, sitView, btnList, btnDataList, chkList, date, time) /** if 뒤에 줄바꿈 하지 않음*/
+                    getTableToServer(cafeName, tableNum, sitView, btnList, sitDataList, chkList, date, time) /** if 뒤에 줄바꿈 하지 않음*/
                 } else { // 실패 처리
                     Log.d("Server fail", "code: 400, table num")
                 }
@@ -268,7 +270,7 @@ class SitPageActivity : AppCompatActivity() {
                         Log.d("Mapped table", "$id: "+dataMap[id])
 
                         addDataList(btnDataList, x, y, SIZE)
-                        createButton(sitView, btnList, x, y, SIZE, chkList, booked)
+                        createButton(sitView, btnList, id, x, y, SIZE, chkList, booked)
                     } else { // 실패 처리
                         Log.d("Server fail", "code: 400")
                     }
