@@ -105,11 +105,6 @@ class SitPageActivity : AppCompatActivity() {
         // server access
         tableNum(data.name, sitView, btnList, btnDataList, chkList, dateStr, timeStr)
 
-        //addDataList(btn_data_list, 100f, 100f, 100)
-        //addDataList(btn_data_list, 200f, 100f, 100)
-        //addDataList(btn_data_list, 100f, 200f, 100)
-        //createButtons(sitView, btn_list, btn_data_list, chk_list)
-
         completeBtn.setOnClickListener {
             selectSits.clear()
             if (sitData.year == 0 || sitData.hour == 0) {
@@ -173,6 +168,11 @@ class SitPageActivity : AppCompatActivity() {
         }
         else {
             buttons[id-1].setBackgroundColor(Color.parseColor("#787878"))
+            buttons[id-1].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
+                when (event?.action) {
+                }
+                false
+            }
         }
 
     }
@@ -225,7 +225,15 @@ class SitPageActivity : AppCompatActivity() {
                     Log.d("Server table response", response.body().toString())
                     tableNum = response.body()!!.tableNum
                     Log.d("Server table num", tableNum.toString())
-                    getTableToServer(cafeName, tableNum, sitView, btnList, sitDataList, chkList, date, time) /** if 뒤에 줄바꿈 하지 않음*/
+                    getTableToServer(cafeName,
+                        tableNum,
+                        sitView,
+                        btnList,
+                        sitDataList,
+                        chkList,
+                        date,
+                        time,
+                        0) /** if 뒤에 줄바꿈 하지 않음*/
                 } else { // 실패 처리
                     Log.d("Server fail", "code: 400, table num")
                 }
@@ -247,16 +255,16 @@ class SitPageActivity : AppCompatActivity() {
         btnDataList: ArrayList<SitData>,
         chkList: ArrayList<Boolean>,
         date: String,
-        time: String
+        time: String,
+        idx: Int
     ) {
-
-        for (table_id in 1..tableNum){
-            val callGetStudent = RetrofitClass.api.getUser(cafeName, table_id, date, time)
+        if (idx <= tableNum-1) {
+            val callGetStudent = RetrofitClass.api.getUser(cafeName, idx, date, time)
+            Log.d("Server idx", idx.toString())
 
             callGetStudent.enqueue(object : Callback<CafeData> {
                 override fun onResponse(call: Call<CafeData>,response: Response<CafeData>) {
-                    if (response.isSuccessful) { // <--> response.code == 200
-
+                    if (response.isSuccessful) {
                         Log.d("Server call", call.request().toString())
 
                         val id = response.body()!!.tableId // 변수는 camelCase
@@ -271,6 +279,15 @@ class SitPageActivity : AppCompatActivity() {
 
                         addDataList(btnDataList, x, y, SIZE)
                         createButton(sitView, btnList, id, x, y, SIZE, chkList, booked)
+                        getTableToServer(cafeName,
+                            tableNum,
+                            sitView,
+                            btnList,
+                            btnDataList,
+                            chkList,
+                            date,
+                            time,
+                            idx+1)
                     } else { // 실패 처리
                         Log.d("Server fail", "code: 400")
                     }
