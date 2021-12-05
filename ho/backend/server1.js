@@ -10,6 +10,7 @@ const cors =require('cors');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const fileStore = require('session-file-store')(session)
 
+
 console.log("start");
 app.use(express.static(path.join(__dirname, '예약앱')));
 //포트 설정
@@ -35,7 +36,6 @@ app.use(cors());
 
 
 //routing
-
 const appRouter = require('./router/app.js');
 var webRouter = require("./router/web.js");
 var login = require("./router/login.js");
@@ -169,9 +169,6 @@ app.get('/logout',(req,res)=>{
       res.redirect('/home');
   });
 });
-
-
-
 
 //세팅 페이지 -정보확인
 app.get("/setting",(req, res)=>
