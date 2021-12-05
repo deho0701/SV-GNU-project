@@ -35,10 +35,8 @@ app.use(cors());
 //routing - APIs
 const appRouter = require('./router/app.js');
 var webRouter = require("./router/web.js");
-var login = require("./router/login.js");
 app.use('/app', appRouter);
 app.use('/web', webRouter);
-app.use('/login', login);
 
 //뷰 엔진 생성 
 var handlebars = require('express-handlebars')
@@ -134,6 +132,18 @@ app.get("/home",(req, res)=>
       }
   }
 );
+
+//로그인
+app.post("/login",
+  passport.authenticate('local', { 
+    //successRedirect: '/index.html', //성공시, 메인페이지 이동
+    failureRedirect: '/login.html' //실패시 로그인 페이지 이동
+}),(req,res)=>{
+  req.session.save(function(){
+    console.log("ok");
+    res.redirect('/index.html');    
+  })
+});
 
 //로그인
 app.post("/login",

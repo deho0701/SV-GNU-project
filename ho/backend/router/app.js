@@ -16,12 +16,13 @@ var pool = mysql.createPool({
   database : 'sv_app_db'
 })
 
+
 /* 테이블 예약 페이지*/
 //총 테이블 개수 구하는 API
 app.get("/table_num",(req, res)=>{
   console.log(req.query);
-  var store_name = 'phonecafe';//req.query.name;
-  var sql = "SELECT COUNT (table_id) as table_num FROM table_info WHERE store_name='"+store_name+"'";
+  var store_name = req.query.name;
+  var sql = "SELECT COUNT(table_id) as table_num FROM table_info WHERE store_name='"+store_name+"'";
   pool.query(sql ,(err, result)=>{
     if (err) { 
       console.log("error in table_num");
@@ -44,6 +45,9 @@ app.all("/sit",(req, res)=>{
     pool.query(sql2 ,(err, result2)=>{
       if (err) { 
         console.log("error in sit");
+        if(time=='0000'){
+          console.log("normal error");
+        }
       }
       else {
         if (result2[0].bool!=0){
@@ -58,10 +62,10 @@ app.all("/sit",(req, res)=>{
         console.log("error in sit2");
       }
       else {
-        const id = req.query.table_id -1;
+        const id = req.query.table_id;
         console.log("원래값");
-        console.log(result[id]);
         var result_add_possible_info = result[id];  //쿼리 결과 값이 변경이 안되어 다른 객체 이용
+        console.log(result_add_possible_info);
         result_add_possible_info["booked"]= check_possible;
         console.log("수정값");
         console.log(result_add_possible_info);
@@ -183,5 +187,28 @@ app.all("/photo",(req, res)=>{
     res.end();
   });
 });
+
+//로그인
+app.post("/login",(req,res)=>{
+  console.log(req.body);
+  var id = req.body.id;
+  var pw = req.body.pw;
+  var sql = "SELECT pw FROM user WHERE id ='"+id+"'";
+  pool.query(sql ,(err,result)=>{
+    if (err) { 
+      console.log("error in login");
+    }
+    else {
+      console.log(result[0].pw);
+      if(pw == result[0].pw){
+        console.log("login claer");
+        res.json(req.body);
+      }else{
+        res.sendStatus(404); //null값 반환
+      }
+    }
+  });
+});
+
 
 module.exports = app;

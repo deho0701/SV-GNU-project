@@ -26,15 +26,26 @@ app.post("/reserve",(req, res)=>
     var sql = "SELECT table_id,time,client_name FROM reservation WHERE store_name ='"+store_name+"'";
     pool.query(sql ,(err, result)=>{
       if (err) { 
-        console.log("error in reserve");
+        console.log("error in reserve1");
       }
       else {
-        console.log(result);
         res.json(result);
       }
     });
   }
 );
+
+app.post("/reserve_tables",(req, res)=>{
+  var store_name = req.body.name;
+  var sql = "SELECT table_id,table_x,table_y FROM table_info WHERE store_name ='"+store_name+"'";
+    pool.query(sql ,(err, result)=>{
+      if (err) { 
+        console.log("error in reserve_tables");
+      }else{
+      res.json(result);
+      }
+    });
+});
 
 /* 자리 배치 페이지 */
 //이미지 저장 옵션 (경로,이름)
@@ -118,11 +129,10 @@ app.all("/seat",(req, res)=>
 
 /* 일반설정 페이지 */
 //기존의 설정 가져옴
-app.all("/pre_setting",(req, res)=>
-  { 
+app.all("/pre_setting",(req, res)=>{ 
     console.log(req.body);
-    var store_name = "cafe 502";//req.body.name;
-    var sql = "SELECT store_ID,store_name,address,store_call FROM store WHERE store_name ='"+store_name+"'";
+    var store_name = req.body.name;
+    var sql = "SELECT * FROM store WHERE store_name ='"+store_name+"'";
     pool.query(sql ,(err, result)=>{
       if (err) { 
         console.log(err);
@@ -132,16 +142,28 @@ app.all("/pre_setting",(req, res)=>
         res.json(result);
       }
     });  
-    console.log("setting clear");
-    //res.send("setting API claer");
   }
 );
 
 //변경된 설정 저장
 app.all("/setting",(req, res)=>
   {   
-    console.log("setting clear");
-    res.send("setting API claer");
+    console.log(req.body);
+    var name = req.body.name;
+    var address= req.body.address;
+    var start_time = req.body.start_time;
+    var end_time = req.body.end_time;
+    var table_time = req.body.table_time;
+    var sql = "UPDATE store SET address = '"+address+"',start_time='"+start_time+"',end_time ='"+end_time+"',table_time='"+table_time+"' WHERE store_name ='"+name+"'";
+    pool.query(sql ,(err, result)=>{
+      if (err) { 
+        console.log(err);
+      }
+      else {
+        console.log(result);
+        res.json({set:"변경완료"});
+      }
+    });
   }
 );
 
