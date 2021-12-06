@@ -86,53 +86,45 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:layout_constraintVertical_bias="0.0"
         android:fillViewport="true">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
             <ScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
-
                 <LinearLayout
                     android:layout_width="350dp"
-                    android:layout_height="400dp"
+                    android:layout_height="480dp"
                     android:orientation="vertical"
                     >
-
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
-
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:id="@+id/sitLayout"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="30dp"
                                 android:background="@drawable/layout_stroke">
-
                                 <ImageView
                                     android:id="@+id/iv_blueprint"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="420dp"
+                                    android:src="@drawable/blueprint"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    android:src="@drawable/blueprint" />
+                                    android:scaleType="fitStart"/>
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
                     </HorizontalScrollView>
-
                 </LinearLayout>
             </ScrollView>
-
             <Button
                 android:id="@+id/completeBtn"
                 android:layout_width="wrap_content"

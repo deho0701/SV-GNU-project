@@ -25,10 +25,13 @@ class HomeFragment: Fragment() {
     lateinit var cafeMap: MutableMap<String, List<String>>
     lateinit var queryCafeMap: MutableMap<String, List<String>>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = LayoutInflater.from(activity).inflate(R.layout.fragment_home,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        return view
+        return LayoutInflater.from(activity).inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -117,7 +120,6 @@ class HomeFragment: Fragment() {
         datas.apply {
             for (cafe in cafeMap) {
                 val icon = resources.getIdentifier("icon_"+cafe.key, "drawable", context.packageName)
-                //Log.d("cafe_icon", icon.toString())
                 if (cafe.value[0] != "name" || cafe.value[0] != "query_name" ) {
                     if (icon != 0) {
                         add(ListData(userId = id,

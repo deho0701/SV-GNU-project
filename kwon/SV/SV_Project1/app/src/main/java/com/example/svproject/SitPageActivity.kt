@@ -29,6 +29,7 @@ import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.reflect.typeOf
 
 class SitPageActivity : AppCompatActivity() {
 
@@ -98,9 +99,6 @@ class SitPageActivity : AppCompatActivity() {
             TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),true).show()
         }
 
-
-
-        // server access
         tableNum(data.name, sitView, btnList, btnDataList, chkList, dateStr, timeStr)
 
         completeBtn.setOnClickListener {
@@ -128,7 +126,6 @@ class SitPageActivity : AppCompatActivity() {
         dataList.add(data)
     }
 
-
     private fun createButton(
         sitView: ConstraintLayout, // 100자 이상 줄바꿈
         buttons: ArrayList<Button>,
@@ -148,6 +145,7 @@ class SitPageActivity : AppCompatActivity() {
         buttons[id-1].y = y
         buttons[id-1].layoutParams = ConstraintLayout.LayoutParams(size, size)
         buttons[id-1].text = id.toString()
+        buttons[id-1].background = getDrawable(R.drawable.seat_icon)
         check_list.add(false)
         if (booked) {
             buttons[id-1].setBackgroundColor(Color.parseColor("#e1eef6"))
@@ -174,7 +172,6 @@ class SitPageActivity : AppCompatActivity() {
 
             }
         }
-
     }
 
     private fun intentToPay(selectData: SitSelectData) { // showAlter 에서 더 직관적인 이름으로 (결제 페이지로 이동)
@@ -256,17 +253,17 @@ class SitPageActivity : AppCompatActivity() {
                         Log.d("Server call", call.request().toString())
 
                         val id = response.body()!!.tableId // 변수는 camelCase
-                        val x = response.body()!!.tableX
-                        val y = response.body()!!.tableY
+                        val x = dpToPx(rateCompute(response.body()!!.tableX), "Float") as Float
+                        val y = dpToPx(rateCompute(response.body()!!.tableY), "Float") as Float
                         val booked = response.body()!!.booked
+                        val size = dpToPx((WEP_BLOCK_SIZE * 3) / 4, "Int") as Int
 
                         dataMap[id] = listOf(x, y)
                         Log.d("Server success", response.body().toString())
-
                         Log.d("Mapped table", "$id: "+dataMap[id])
 
-                        addDataList(btnDataList, x, y, SIZE)
-                        createButton(sitView, btnList, id, x, y, SIZE, chkList, booked)
+                        addDataList(btnDataList, x, y, size)
+                        createButton(sitView, btnList, id, x, y, size, chkList, booked)
                         getTableToServer(cafeName,
                             tableNum,
                             sitView,
@@ -289,6 +286,21 @@ class SitPageActivity : AppCompatActivity() {
         }
     }
 
+    private fun rateCompute(value: Float): Float {
+        return value * (APP_FRAME_SIZE / WEP_FRAME_SIZE)
+    }
+
+    private fun dpToPx(preValue: Any, type: String): Any {
+        val density = resources.displayMetrics.density
+
+        if (type == "Float") {
+            return (preValue as Float * density).toFloat()
+        }
+        else if(type == "Int") {
+            return (preValue as Int * density).toInt()
+        }
+        return false
+    }
 
     private fun dateToStr(sitData: SitSelectData): String {
         var month: String = (sitData.month + 1).toString()
@@ -315,6 +327,8 @@ class SitPageActivity : AppCompatActivity() {
     }
 
     companion object { // 상수로 선언 (대문자)
-        private const val SIZE = 100
+        private const val APP_FRAME_SIZE = 420f
+        private const val WEP_FRAME_SIZE = 560f
+        private const val WEP_BLOCK_SIZE = 80
     }
 }
