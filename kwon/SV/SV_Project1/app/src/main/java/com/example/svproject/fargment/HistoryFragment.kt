@@ -100,7 +100,10 @@ class HistoryFragment : Fragment() {
                         Log.d("Server success history", response.body().toString())
 
                         datas.apply {
-                            add(ListData(icon = R.drawable.coffee_icon, name = name, content = "$date | $time"))
+                            add(ListData(userId = id,
+                                icon = R.drawable.coffee_icon,
+                                name = name,
+                                content = "$date | $time"))
 
                             historyRecyclerAdapter.datas = datas
                             historyRecyclerAdapter.notifyDataSetChanged()

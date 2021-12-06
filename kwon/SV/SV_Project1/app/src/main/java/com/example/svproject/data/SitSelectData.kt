@@ -3,7 +3,7 @@ package com.example.svproject.data
 import java.io.Serializable
 
 class SitSelectData(
-    val id: Int,
+    val id: String,
     val icon: Int,
     val name: String,
     var sit: ArrayList<Int>,

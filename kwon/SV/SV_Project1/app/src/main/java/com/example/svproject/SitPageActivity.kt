@@ -40,8 +40,6 @@ class SitPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sit_page)
 
-        val id = intent.getIntExtra("id", -1)
-
         val data = intent.getSerializableExtra("list data") as ListData // 카페리스트에서 넘어옴 (뒤로가기 시 카페 리스트로)
         val sitView = findViewById<ConstraintLayout>(R.id.sitLayout)
         iv_profile.setImageResource(data.icon)
@@ -60,7 +58,7 @@ class SitPageActivity : AppCompatActivity() {
         btn_date.text = dayFormatter.format(current)
         btn_time.text = timeFormatter.format(current)
 
-        val sitData = SitSelectData(id, data.icon, data.name, selectSits, 0, 0, 0, 0, 0) // id, 가게 이름, 자리, 시간
+        val sitData = SitSelectData(data.userId, data.icon, data.name, selectSits, 0, 0, 0, 0, 0) // id, 가게 이름, 자리, 시간
 
         var dateStr = dateToStr(sitData)
         var timeStr = timeToStr(sitData)
@@ -178,18 +176,6 @@ class SitPageActivity : AppCompatActivity() {
         }
 
     }
-
-    /**
-    private fun createButtons(sitView: ConstraintLayout,
-                              buttons: ArrayList<Button>,
-                              sitDatas: ArrayList<SitData>,
-                              checks: ArrayList<Boolean>) {
-        for(i in sitDatas) {
-            createButton(sitView, buttons, i.x, i.y, i.size, checks)
-            Log.d("x, y", i.x.toString() + i.y.toString())
-        }
-    }
-    */
 
     private fun intentToPay(selectData: SitSelectData) { // showAlter 에서 더 직관적인 이름으로 (결제 페이지로 이동)
 
