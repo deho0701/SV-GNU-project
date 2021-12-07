@@ -21,6 +21,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.app.Activity
 import androidx.fragment.app.Fragment
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 
 class HistoryRecyclerAdapter(private val context: Context, private val id: String)
@@ -50,30 +54,41 @@ class HistoryRecyclerAdapter(private val context: Context, private val id: Strin
             content.text = item.content
 
             itemView.setOnClickListener {
-                var builder = AlertDialog.Builder(context)
-                builder.setTitle("예약 취소")
-                builder.setMessage("선택하신 예약을 취소하시겠습니까?")
+                val formatter = DateTimeFormatter.ofPattern("yy-MM-dd | HHmm")
+                val dateTime = LocalDateTime.parse(item.content, formatter)
 
-                var listener = object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        when (which) {
-                            DialogInterface.BUTTON_NEGATIVE ->{
-
-                            }
-                            DialogInterface.BUTTON_POSITIVE ->{
-                                val contents = item.content.split(" | ")
-                                removeHistory(id, item.name, contents[0], contents[1].toInt())
-                                Toast.makeText(context, "예약이 취소되었습니다.", Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }
+                if (dateTime > LocalDateTime.now()) {
+                    removeAction(item)
                 }
-                builder.setPositiveButton("예", listener)
-                builder.setNegativeButton("아니오", listener)
-
-                builder.show()
+                else { Toast.makeText(context, "만료된 예약입니다.", Toast.LENGTH_SHORT).show() }
             }
         }
+    }
+
+    private fun removeAction(item: ListData) {
+        var builder = AlertDialog.Builder(context)
+        builder.setTitle("예약 취소")
+        builder.setMessage("선택하신 예약을 취소하시겠습니까?")
+
+        var listener = object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                when (which) {
+                    DialogInterface.BUTTON_NEGATIVE ->{
+
+                    }
+                    DialogInterface.BUTTON_POSITIVE ->{
+                        val contents = item.content.split(" | ")
+                        removeHistory(id, item.name, contents[0], contents[1].toInt())
+                        Toast.makeText(context, "예약이 취소되었습니다.", Toast.LENGTH_LONG).show()
+                        datas.remove(item)
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+        }
+        builder.setPositiveButton("예", listener)
+        builder.setNegativeButton("아니오", listener)
+        builder.show()
     }
 
     private fun removeHistory(id: String, name: String, date: String, time: Int) {
@@ -88,8 +103,6 @@ class HistoryRecyclerAdapter(private val context: Context, private val id: Strin
                 if (response.isSuccessful) { // <--> response.code == 200
                     Log.d("Server call", call.request().toString())
                     Log.d("Server history del", response.body().toString())
-
-
                 } else { // code == 400
                     // 실패 처리
                     Log.d("Server fail", "code: 400")

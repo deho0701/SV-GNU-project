@@ -41,11 +41,12 @@ class SitPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sit_page)
 
-        val data = intent.getSerializableExtra("list data") as ListData // 카페리스트에서 넘어옴 (뒤로가기 시 카페 리스트로)
+        val data = intent.getSerializableExtra("list data") as ListData
         val sitView = findViewById<ConstraintLayout>(R.id.sitLayout)
         iv_profile.setImageResource(data.icon)
         tv_profile_name.text = data.name
         val selectSits = ArrayList<Int>()
+
 
         // 도면 불러오기
         val imageUrl = "http://117.16.164.14:5050/app/photo"
@@ -53,7 +54,7 @@ class SitPageActivity : AppCompatActivity() {
 
         //time set
         val current : Long = System.currentTimeMillis()
-        val dayFormatter = SimpleDateFormat("yyyy - MM - dd |")
+        val dayFormatter = SimpleDateFormat("yyyy-MM-dd |")
         val timeFormatter = SimpleDateFormat("HHmm")
 
         btn_date.text = dayFormatter.format(current)
@@ -82,7 +83,14 @@ class SitPageActivity : AppCompatActivity() {
                 Log.d("Server date", "$dateStr / $timeStr")
                 tableNum(data.name, sitView, btnList, btnDataList, chkList, dateStr, timeStr)
             }
-            DatePickerDialog(this, dateSetListener, cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH)).show()
+            DatePickerDialog(this,
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+            ).apply {
+                datePicker.minDate = System.currentTimeMillis()
+            }.show()
         }
 
         btn_time.setOnClickListener {
@@ -104,7 +112,7 @@ class SitPageActivity : AppCompatActivity() {
         completeBtn.setOnClickListener {
             selectSits.clear()
             if (sitData.year == 0 || sitData.hour == 0) {
-                Toast.makeText(this,"시간을 선택해 주세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"날짜와 시간을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             else {
@@ -144,18 +152,17 @@ class SitPageActivity : AppCompatActivity() {
         buttons[id-1].x = x
         buttons[id-1].y = y
         buttons[id-1].layoutParams = ConstraintLayout.LayoutParams(size, size)
-        buttons[id-1].text = id.toString()
-        buttons[id-1].background = getDrawable(R.drawable.seat_icon)
+        //buttons[id-1].text = id.toString()
         check_list.add(false)
         if (booked) {
-            buttons[id-1].setBackgroundColor(Color.parseColor("#e1eef6"))
+            buttons[id-1].background = getDrawable(R.drawable.seat_icon)
             buttons[id-1].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
                 when (event?.action) {
                     MotionEvent.ACTION_UP -> if (!check_list[id-1]) {
-                        buttons[id-1].setBackgroundColor(Color.parseColor("#004e66"))
+                        buttons[id-1].background = getDrawable(R.drawable.seat_icon_selected)
                         check_list[id-1] = true
                     } else if (check_list[id-1]) {
-                        buttons[id-1].setBackgroundColor(Color.parseColor("#e1eef6"))
+                        buttons[id-1].background = getDrawable(R.drawable.seat_icon)
                         check_list[id-1] = false
                     }
                 }
@@ -163,7 +170,7 @@ class SitPageActivity : AppCompatActivity() {
             }
         }
         else {
-            buttons[id-1].setBackgroundColor(Color.parseColor("#787878"))
+            buttons[id-1].background = getDrawable(R.drawable.seat_icon_false)
             buttons[id-1].setOnTouchListener { _, event -> //view 사용하지 않음 -> _
                 when (event?.action) {
                     MotionEvent.ACTION_UP -> Toast.makeText(this, "이미 예약된 자리입니다.", Toast.LENGTH_SHORT).show()

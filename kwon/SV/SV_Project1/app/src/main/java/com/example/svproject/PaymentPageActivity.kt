@@ -27,23 +27,23 @@ class PaymentPageActivity : AppCompatActivity() {
 
         val data = intent.getSerializableExtra("selected data") as SitSelectData
         var peopleStr = ""
-        val price = 3000
+        val price = 500
 
-        val id = "hoho"
+        val id = data.id
 
         print(data.sit)
 
         iv_profile.setImageResource(data.icon)
         tv_profile_name.text = data.name
 
+        Log.d("Data time", "${data.year},${data.month},${data.day},${data.hour},${data.minute}")
         val dateStr = dateToStr(data)
         val timeStr = timeToStr(data)
-        tv_date.text = dateStr + timeStr
+        tv_date.text = "$dateStr | $timeStr"
         for(i in data.sit) {
-            if(i != data.sit.size-1) peopleStr += "%d, ".format(i)
-            else peopleStr += i
+            peopleStr += "$i "
         }
-        tv_selected_sit.text = "%s 번 (총 %d인)".format(peopleStr, data.sit.size*2)
+        tv_selected_sit.text = "%s 번".format(peopleStr)
         tv_price.text = "%d 원".format(price)
 
         payBtn.setOnClickListener {
@@ -68,7 +68,6 @@ class PaymentPageActivity : AppCompatActivity() {
             }
             builder.setPositiveButton("결제", listener)
             builder.setNegativeButton("취소", listener)
-
             builder.show()
         }
     }
@@ -98,8 +97,6 @@ class PaymentPageActivity : AppCompatActivity() {
     private fun postPay(booker_id: String, cafe_name: String, tables: ArrayList<Int>, date: String, time: String) {
         val bookData = BookData(booker_id, cafe_name, tables, date, time)
         val callPostBook = RetrofitClass.api.postBookData(bookData)
-
-
 
         callPostBook.enqueue(object : Callback<BookData> {
             override fun onResponse(call: Call<BookData>, response: Response<BookData>) {
@@ -139,8 +136,8 @@ class PaymentPageActivity : AppCompatActivity() {
         if (sitData.hour < 10) {
             hour = '0' + sitData.month.toString()
         }
-        if (sitData.day < 10) {
-            minute = '0'+sitData.minute.toString()
+        if (sitData.minute < 10) {
+            minute = '0' + sitData.minute.toString()
         }
         return "${hour}${minute}"
     }
