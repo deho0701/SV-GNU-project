@@ -4,20 +4,22 @@ import axios from 'axios';
 class Edit extends React.Component{
     constructor(props){
         super(props);
+        /****
+        state 설명
+        id: 현재 테이블 개수
+        tables: 테이블 객체
+        ****/
         this.state = {
             id: 1,
-            tables: [
-                //{id:1, x:10, y:10},
-                //{id:2, x:20, y:25},
-                //{id:3, x:15, y:15}
-            ],
+            tables: [],
             file: '',
-            previewURL: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAeAB4AAD…UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//2Q==',
+            previewURL: 'http://117.16.164.14:5050/web/photo_down',
             diffX: 0,
             diffY: 0,
-            shopX: 288,
-            shopY: 152,
-            dragging: false
+            shopX: 502,
+            shopY: 350,
+            dragging: false,
+            data:''
         }
 
         this._dragStart = this._dragStart.bind(this);
@@ -26,7 +28,15 @@ class Edit extends React.Component{
     }
 
     callApi = async ()=>{
-        axios.post("http://117.16.164.14:5050/web/pre_seat", {name:'bookcafe'}).then((res)=> console.log(res));
+        await axios.post("http://117.16.164.14:5050/web/pre_seat", {name:'cafe 502'}
+        ).then((res)=>{
+            console.log(res)
+            this.setState({
+                id: res.data.length+1,
+                tables: res.data
+            })
+        }
+        );
     };
 
     componentDidMount(){
@@ -47,22 +57,11 @@ class Edit extends React.Component{
         reader.readAsDataURL(file);
     }
 
-    componentWillMount(){
-        const tables = localStorage.tables;
-        if(tables){
-            this.setState({
-                previewURL: JSON.parse(localStorage.previewURL),
-                tables: JSON.parse(tables),
-                id: JSON.parse(localStorage.id)
-            })          
-        }
-    }
-
     // 자리 추가
     addTable = () => {
         const { tables } = this.state;
         this.setState({
-            tables: tables.concat({ id:this.state.id++, x:0, y:0})
+            tables: tables.concat({table_id:this.state.tables.length+1, table_x:0, table_y:0})
         })
         console.log('add');
     }
@@ -72,6 +71,12 @@ class Edit extends React.Component{
         
         // 서버에 데이터 저장
         const url = "http://117.16.164.14:5050/web/seat";
+        const formData = new FormData();
+        const config = {
+            header: {'content-type': 'multipart/form-data'}
+        }
+        formData.append("img", this.state.file);
+        axios.post("http://117.16.164.14:5050/web/photo_up", formData).then((res)=>console.log(res));
         var data = {};
         data.name = this.props.name;
         data.tables = this.state.tables;
@@ -80,7 +85,7 @@ class Edit extends React.Component{
         console.log(JSON.stringify(data));
         axios.post(url, data).then((res)=>console.log(res));
         //axios.post("http://117.16.164.14:5050/web/seat", {why:'andam'}).then((res) => console.log(res));
-
+        console.log(this.state.file);
         console.log(this.state.tables);
         console.log('saved');
     }
@@ -88,10 +93,14 @@ class Edit extends React.Component{
     // 자리 삭제
     delete = id => {
         console.log(id);
-        const { tables } = this.state;
+        //const { tables } = this.state;
+        let tb = this.state.tables.filter((table)=> table.table_id !== id);
+        console.log(tb);
         this.setState({
-            tables: tables.filter(table => table.id !== id),
-            id: this.state.id-1
+            tables: tb.map(
+                (table, index) => table.table_id === index+1 
+                ? table
+                : {table_id:index+1, table_x:table.table_x, table_y:table.table_y})
         })
         console.log(this.state.id);
     }
@@ -118,8 +127,8 @@ class Edit extends React.Component{
 
             this.setState({
                 tables: this.state.tables.map(
-                    table=> table.id === Number(e.target.id)
-                    ? {id:table.id, x:Math.round(left), y:Math.round(top)}
+                    table=> table.table_id === Number(e.target.id)
+                    ? {table_id:table.table_id, table_x:left, table_y:top}
                     : table)
             });
         }
@@ -134,38 +143,36 @@ class Edit extends React.Component{
     }
 
     render() {
+        console.log(this.state.tables);
         return(
             <div id="container" className="container">
-                    <div className="title">
-                        <p>자리 배치</p>
-                    </div>
-                    
-                    <div className="w">
-
-                        <div id="shop" className="shop">
-                            <button id='add_btn' className='btn_style' onClick={this.addTable}>추가</button>
-                            <input type="file" name='imgFile' onChange={this.handleFileInput}></input>
-                            Shop
-                            <button id="save_btn" className='btn_style' onClick={this.save}>저장</button>
-                            
-                            <img className='floor_img' src={this.state.previewURL}/>
-                            {this.state.tables.map(table=>{
-                            return(
-                                <div
-                                    className="table"
-                                    id={table.id}
-                                    style={{left:table.x, top:table.y}}
-                                    onMouseDown={this._dragStart}
-                                    onMouseMove={this._dragging}
-                                    onMouseUp={this._dragEnd}
-                                >{table.id}<button id='delete_btn' className='btn_style' onClick={() => {this.delete(table.id);}}>x</button></div>
-                            )})}
-                        </div>
-                    </div>
-                    
-                    
-                    <div className="status"></div>
+                <div className="title">
+                    <p>자리 배치</p>
                 </div>
+                <div id="shop" className="shop">
+                    <h1>Shop</h1>
+                    <div className="btn_box">
+                        <button id='add_btn' className='btn_style' onClick={this.addTable}>추가</button>
+                        <input type="file" accept="image/jpg, image/png, image/jpeg, image/gif" className='imgFile' name='img' onChange={this.handleFileInput}></input>
+                        <button id="save_btn" className='btn_style' onClick={this.save}>저장</button>
+                    </div>
+                    <div className="img_container">
+                    <img className='floor_img' src={this.state.previewURL}/>
+                        {this.state.tables.map(table=>{
+                        return(
+                            <div
+                                className="table"
+                                id={table.table_id}
+                                style={{left:table.table_x, top:table.table_y}}
+                                onMouseDown={this._dragStart}
+                                onMouseMove={this._dragging}
+                                onMouseUp={this._dragEnd}
+                            >{table.table_id}<button id='delete_btn' className='btn_style' onClick={() => {this.delete(table.table_id);}}>x</button>
+                            </div>
+                        )})}
+                    </div>
+                </div>
+            </div>
         )
     }
 }

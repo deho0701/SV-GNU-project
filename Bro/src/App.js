@@ -10,15 +10,10 @@ class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      shop: {name:'bookcafe', img:img},
+      shop: {name:'cafe 502', img:img},
       mode: 'reservation'
-    }
-    
-  }
-
-  componentWillMount(){
-
-  }
+    }  
+  };
 
   render() {
     return (
