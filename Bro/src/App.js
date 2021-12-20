@@ -1,5 +1,5 @@
 import React from 'react';
-import img from "./sample.JPG";
+import img from "./icon.png";
 import "./App.css";
 import Sidebar from "./Sidebar";
 import Container from "./Container";

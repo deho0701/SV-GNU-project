@@ -13,7 +13,7 @@ class Edit extends React.Component{
             id: 1,
             tables: [],
             file: '',
-            previewURL: 'http://117.16.164.14:5050/web/photo_down',
+            previewURL: 'http://117.16.164.14:5050/web/photo',
             diffX: 0,
             diffY: 0,
             shopX: 502,
@@ -77,6 +77,7 @@ class Edit extends React.Component{
         }
         formData.append("img", this.state.file);
         axios.post("http://117.16.164.14:5050/web/photo_up", formData).then((res)=>console.log(res));
+        
         var data = {};
         data.name = this.props.name;
         data.tables = this.state.tables;

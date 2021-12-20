@@ -1,9 +1,11 @@
 import React from 'react';
+import profileimg from "./cafe502.png";
 import PopupDom from './PopupDom';
 import PopupPostCode from './PopupPostCode';
 import Tab from './Tab';
 import axios from 'axios';
 import TabGroup from './Tab';
+import TabGroup2 from './Tab2';
 
 class Setting extends React.Component{
     constructor(props){
@@ -13,10 +15,11 @@ class Setting extends React.Component{
             name:'',
             address:'주소를 입력하세요',
             profile: '',
-            profileURL: '',
+            profileURL: profileimg,
             start_time: '13:00',
             end_time: '',
             tableTime: '',
+            alarmTime: 5,
             isOpenPopup : false,
         }
 
@@ -25,6 +28,7 @@ class Setting extends React.Component{
         this.changeSTime = this.changeSTime.bind(this);
         this.changeETime = this.changeETime.bind(this);
         this.changeTableTime = this.changeTableTime.bind(this);
+        this.changeAlarmTime = this.changeAlarmTime.bind(this);
     }
 
     callApi = async ()=>{
@@ -33,13 +37,15 @@ class Setting extends React.Component{
             console.log(res.data[0])
             this.setState({
                 store_ID: res.data[0].store_ID,
+                name: res.data[0].store_name,
                 address: res.data[0].address,
                 start_time: res.data[0].start_time,
                 end_time: res.data[0].end_time,
-                tableTime: res.data[0].table_time
-            })
-        }
+                tableTime: res.data[0].table_time,
+                alarmTime: res.data[0].alarm_time
+            })}
         );
+        
     };
 
     componentDidMount(){
@@ -101,13 +107,18 @@ class Setting extends React.Component{
         })
     }
 
+    changeAlarmTime(data) {
+        console.log(data);
+        this.setState({
+            alarmTime: data
+        })
+    }
+
     save = () => {
         const formData = new FormData();
         const config = {
             header: {'content-type': 'multipart/form-data'}
         }
-        formData.append("profile_img", this.state.profile);
-        axios.post("http://117.16.164.14:5050/web/setting", formData).then((res)=>console.log(res));
         
         var data = {};
         data.name = this.props.name;
@@ -115,6 +126,7 @@ class Setting extends React.Component{
         data.start_time = this.state.start_time;
         data.end_time = this.state.end_time;
         data.table_time = this.state.tableTime;
+        data.alarm_time = this.state.alarmTime;
 
         axios.post("http://117.16.164.14:5050/web/setting", data).then((res)=>console.log(res));
     }
@@ -135,7 +147,7 @@ class Setting extends React.Component{
                     </div>
                     <div className="profile_container">
                         <p>ID: {this.state.store_ID}</p>
-                        <p>가게명: <input className="input_setting" value={this.props.name} onChange={this.onChangetext}/></p>
+                        <p>가게명: <input className="input_setting" value={this.state.name} onChange={this.onChangetext}/></p>
                         <p>가게주소: <input className="input_setting" value={this.state.address} onClick={this.openPopup} readOnly/>
                             <button type='button' id="popupDom" onClick={this.openPopup}>주소찾기</button>
                             {this.state.isOpenPopup && 
@@ -147,6 +159,7 @@ class Setting extends React.Component{
                         <p>운영시간: <input type='time' className="input_setting" value={this.state.start_time} onChange={this.changeSTime}/>
                             ~<input type='time' className="input_setting" value={this.state.end_time} onChange={this.changeETime}/></p>
                         <p><TabGroup onChange={this.changeTableTime} data={this.state.tableTime}/></p>
+                        <p><TabGroup2 onChange={this.changeAlarmTime} data={this.state.alarmTime}/></p>
                         <button id="save_btn" className='btn_style' onClick={this.save}>저장</button>
                     </div>
                 </div>
