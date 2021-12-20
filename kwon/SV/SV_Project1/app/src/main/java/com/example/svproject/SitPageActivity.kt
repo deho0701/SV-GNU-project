@@ -49,7 +49,8 @@ class SitPageActivity : AppCompatActivity() {
 
 
         // 도면 불러오기
-        val imageUrl = "http://117.16.164.14:5050/app/photo"
+        val imageUrl = getString(R.string.blueprint)
+        Log.d("imageUrl", imageUrl)
         Glide.with(this).load(imageUrl).into(iv_blueprint)
 
         //time set

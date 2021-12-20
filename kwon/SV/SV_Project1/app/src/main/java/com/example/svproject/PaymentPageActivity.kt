@@ -3,6 +3,7 @@ package com.example.svproject
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
@@ -80,7 +81,7 @@ class PaymentPageActivity : AppCompatActivity() {
         var listener = object : DialogInterface.OnClickListener {
             override fun onClick(dialog: DialogInterface?, which: Int) {
                 when (which) {
-                    DialogInterface.BUTTON_NEUTRAL ->{
+                    DialogInterface.BUTTON_POSITIVE ->{
                         val intent = Intent(this@PaymentPageActivity, MainActivity::class.java).apply {
                             putExtra("id", id)
                         }
@@ -89,8 +90,7 @@ class PaymentPageActivity : AppCompatActivity() {
                 }
             }
         }
-        builder.setNeutralButton("확인", listener)
-
+        builder.setPositiveButton("확인", listener)
         builder.show()
     }
 
