@@ -101,7 +101,7 @@ class HistoryFragment : Fragment() {
 
                         datas.apply {
                             add(ListData(userId = id,
-                                icon = R.drawable.coffee_icon,
+                                icon = R.drawable.main_icon,
                                 name = name,
                                 content = "$date | $time"))
 
