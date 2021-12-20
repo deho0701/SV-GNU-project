@@ -171,10 +171,10 @@ a:hover{
     cursor: pointer;
     width: 80px;
     height: 80px;
-    border: 1px solid black;
+    
     padding: 6px;
     position:absolute;
-    background-image: url('table_icon.png') no-repeat;
+    background: url('table_icon.png') no-repeat 45% 75%;
 }
 
 .btn_style, ::-webkit-file-upload-button{

@@ -77,6 +77,7 @@ class Edit extends React.Component{
         }
         formData.append("img", this.state.file);
         axios.post("http://117.16.164.14:5050/web/photo_up", formData).then((res)=>console.log(res));
+        
         var data = {};
         data.name = this.props.name;
         data.tables = this.state.tables;
